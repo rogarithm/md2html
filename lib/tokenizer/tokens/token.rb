@@ -2,7 +2,7 @@ require_relative 'null_token'
 
 # A base token. The tokenizer returns an array of these. Each token has a type
 # and a value. None can be nil.
-#
+
 class Token
   attr_reader :type, :value
   def initialize(type:, value:)

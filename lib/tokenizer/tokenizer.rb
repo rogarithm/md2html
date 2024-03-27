@@ -8,7 +8,7 @@ require_relative 'token_list'
 # Example:
 #   "_Hi!_" => [{type: UNDERSCORE, value: '_'}, {type: TEXT, value: 'Hi!'},
 #               {type: UNDERSCORE, value: '_'}]
-#
+
 class Tokenizer
   TOKEN_SCANNERS = [
     SimpleScanner, # Recognizes simple one-char tokens like `_` and `*`

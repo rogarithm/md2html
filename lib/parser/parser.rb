@@ -1,7 +1,7 @@
 require_relative 'parsers/parser_factory'
 
 # Transforms a list of tokens into an Abstract Syntax Tree.
-#
+
 class Parser
   def parse(tokens)
     body = body_parser.match(tokens)
