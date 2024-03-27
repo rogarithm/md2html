@@ -1,4 +1,5 @@
 require_relative '../lib/parser/parser_factory'
+require_relative '../lib/parser'
 Dir.glob('./lib/parser/*.rb').each do |file|
   require file
 end

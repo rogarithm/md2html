@@ -1,6 +1,6 @@
-require_relative 'simple_scanner'
-require_relative 'text_scanner'
-require_relative 'token_list'
+require_relative 'tokenizer/simple_scanner'
+require_relative 'tokenizer/text_scanner'
+require_relative 'tokenizer/token_list'
 
 # A tokenizer, the purpose of this class is to transform a markdown string
 # into a list of "tokens". In this case, each token has a type and a value.
