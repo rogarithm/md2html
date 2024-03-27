@@ -1,5 +1,5 @@
-require_relative '../lib/parser'
-Dir.glob('./lib/parser/*.rb').each do |file|
+require_relative '../lib/md2html/parser'
+Dir.glob('./lib/md2html/parser/*.rb').each do |file|
   require file
 end
 require 'pry'

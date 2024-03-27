@@ -1,4 +1,4 @@
-require_relative '../lib/parser/parser_factory'
+require_relative '../lib/md2html/parser/parser_factory'
 require 'pry'
 
 describe MatchesStar do
