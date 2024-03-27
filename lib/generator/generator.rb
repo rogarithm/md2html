@@ -1,4 +1,4 @@
-require_relative "visitors/body_visitor"
+require_relative "body_visitor"
 
 class Generator
   def generate(ast)
