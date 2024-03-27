@@ -5,7 +5,7 @@ require_relative '../lib/parser/parser_factory'
 Dir.glob('./lib/parser/*.rb').each do |file|
   require file
 end
-Dir.glob('./lib/parser/concern/*.rb').each do |file|
+Dir.glob('./lib/parser/*.rb').each do |file|
   require file
 end
 require 'pry'

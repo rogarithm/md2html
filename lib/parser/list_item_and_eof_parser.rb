@@ -1,4 +1,4 @@
-require_relative "concerns/matches_first"
+require_relative "matches_first"
 
 class ListItemAndEofParser < BaseParser
   include MatchesFirst

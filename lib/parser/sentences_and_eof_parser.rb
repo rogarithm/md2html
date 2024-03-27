@@ -1,4 +1,4 @@
-require_relative "concerns/matches_star"
+require_relative "matches_star"
 
 class SentencesAndEofParser < BaseParser
   include MatchesStar

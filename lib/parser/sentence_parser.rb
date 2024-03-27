@@ -1,5 +1,5 @@
 require_relative "base_parser"
-require_relative "concerns/matches_first"
+require_relative "matches_first"
 
 class SentenceParser < BaseParser
   include MatchesFirst
