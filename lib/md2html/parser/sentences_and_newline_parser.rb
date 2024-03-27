@@ -1,14 +1,18 @@
 require_relative "matches_star"
 
-class SentencesAndNewlineParser < BaseParser
-  include MatchesStar
+module Md2Html
+  module Parser
+    class SentencesAndNewlineParser < BaseParser
+      include MatchesStar
 
-  def match(tokens)
-    nodes, consumed = match_star tokens, with: sentence_parser
-    return Node.null if nodes.empty?
-    return Node.null unless tokens.peek_at(consumed, 'NEWLINE', 'NEWLINE')
-    consumed += 2 # consume newlines
+      def match(tokens)
+        nodes, consumed = match_star tokens, with: sentence_parser
+        return Node.null if nodes.empty?
+        return Node.null unless tokens.peek_at(consumed, 'NEWLINE', 'NEWLINE')
+        consumed += 2 # consume newlines
 
-    ParagraphNode.new(sentences: nodes, consumed: consumed)
+        ParagraphNode.new(sentences: nodes, consumed: consumed)
+      end
+    end
   end
 end
