@@ -1,5 +1,5 @@
-require_relative 'scanners/simple_scanner'
-require_relative 'scanners/text_scanner'
+require_relative 'simple_scanner'
+require_relative 'text_scanner'
 require_relative 'token_list'
 
 # A tokenizer, the purpose of this class is to transform a markdown string
