@@ -1,4 +1,4 @@
-require_relative 'tokens/token'
+require_relative 'token'
 require_relative 'simple_scanner'
 
 # A simple text scanner, it basically selects everything the simple scanner
