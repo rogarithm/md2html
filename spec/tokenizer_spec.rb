@@ -1,7 +1,4 @@
 require_relative '../lib/tokenizer'
-Dir.glob('./lib/tokenizer/*.rb').each do |file|
-  require file
-end
 require 'pry'
 
 describe Tokenizer do

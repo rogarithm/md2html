@@ -1,14 +1,4 @@
-Dir.glob('./lib/tokenizer/*.rb').each do |file|
-  require file
-end
 require_relative '../lib/parser/parser_factory'
-require_relative '../lib/parser'
-Dir.glob('./lib/parser/*.rb').each do |file|
-  require file
-end
-Dir.glob('./lib/parser/*.rb').each do |file|
-  require file
-end
 require 'pry'
 
 describe MatchesStar do
