@@ -1,5 +1,5 @@
-require_relative '../lib/generator'
-Dir.glob('./lib/generator/*.rb').each do |file|
+require_relative '../lib/md2html/generator'
+Dir.glob('./lib/md2html/generator/*.rb').each do |file|
   require file
 end
 require 'pry'
