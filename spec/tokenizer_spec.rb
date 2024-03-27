@@ -1,4 +1,4 @@
-Dir.glob('./lib/okenizer/**/*.rb').each do |file|
+Dir.glob('./lib/tokenizer/**/*.rb').each do |file|
   require file
 end
 require 'pry'

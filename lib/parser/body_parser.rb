@@ -1,5 +1,5 @@
 require_relative "base_parser"
-require_relative "concerns/matches_star"
+require_relative "parsers/concerns/matches_star"
 
 class BodyParser < BaseParser
   include MatchesStar

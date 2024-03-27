@@ -1,4 +1,4 @@
-require_relative 'parsers/parser_factory'
+require_relative 'parser_factory'
 
 # Transforms a list of tokens into an Abstract Syntax Tree.
 

@@ -1,10 +1,10 @@
-require_relative "concerns/matches_star"
+require_relative "parsers/concerns/matches_plus"
 
-class SentencesAndEofParser < BaseParser
-  include MatchesStar
+class ListItemsAndEofParser < BaseParser
+  include MatchesPlus
 
   def match(tokens)
-    nodes, consumed = match_star tokens, with: sentence_parser
+    nodes, consumed = match_plus tokens, with: list_item_parser
 
     return Node.null if nodes.empty?
     if tokens.peek_at(consumed, 'EOF')
@@ -15,6 +15,6 @@ class SentencesAndEofParser < BaseParser
       return Node.null
     end
 
-    ParagraphNode.new(sentences: nodes, consumed: consumed)
+    ListNode.new(sentences: nodes, consumed: consumed)
   end
 end

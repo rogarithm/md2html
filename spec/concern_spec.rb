@@ -1,7 +1,7 @@
 Dir.glob('./lib/tokenizer/**/*.rb').each do |file|
   require file
 end
-require_relative '../lib/parser/parsers/parser_factory'
+require_relative '../lib/parser/parser_factory'
 Dir.glob('./lib/**/*.rb').each do |file|
   require file
 end
