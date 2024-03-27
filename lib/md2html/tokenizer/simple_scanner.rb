@@ -5,19 +5,23 @@ require_relative 'token'
 #
 # Eg: SimpleToken.from_string("_foo") => #<Token type:'UNDERSCORE', value: '_'>
 #     SimpleToken.from_string("foo")  => #<NullToken>
-#
-class SimpleScanner
-  TOKEN_TYPES = {
-    '_'  => 'UNDERSCORE',
-    '-'  => 'DASH',
-    '*'  => 'STAR',
-    "\n" => 'NEWLINE'
-  }.freeze
 
-  def self.from_string(plain_markdown)
-    char = plain_markdown[0]
-    Token.new(type: TOKEN_TYPES[char], value: char)
-  rescue InvalidTokenError
-    Token.null
+module Md2Html
+  module Tokenizer
+    class SimpleScanner
+      TOKEN_TYPES = {
+        '_'  => 'UNDERSCORE',
+        '-'  => 'DASH',
+        '*'  => 'STAR',
+        "\n" => 'NEWLINE'
+      }.freeze
+
+      def self.from_string(plain_markdown)
+        char = plain_markdown[0]
+        Token.new(type: TOKEN_TYPES[char], value: char)
+      rescue InvalidTokenError
+        Token.null
+      end
+    end
   end
 end

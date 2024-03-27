@@ -1,11 +1,15 @@
 # A "null token". Follows the Nullable Object Pattern.
 
-class NullToken
-  def null?
-    true
-  end
+module Md2Html
+  module Tokenizer
+    class NullToken
+      def null?
+        true
+      end
 
-  def present?
-    false
+      def present?
+        false
+      end
+    end
   end
 end

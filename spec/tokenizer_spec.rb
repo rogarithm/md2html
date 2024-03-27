@@ -1,19 +1,15 @@
 require_relative '../lib/md2html/tokenizer'
 require 'pry'
 
-describe Tokenizer do
-  before(:each) do
-    @tokenizer = Tokenizer.new
-  end
-
+describe Md2Html::Tokenizer do
   it "tokenize text" do
-    tokens = @tokenizer.tokenize('Hi')
+    tokens = Md2Html::Tokenizer::tokenize('Hi')
     expect(tokens.first.type).to eq 'TEXT'
     expect(tokens.first.value).to eq 'Hi'
   end
 
   it "tokenize text with underscores" do
-    tokens = @tokenizer.tokenize('_Foo_')
+    tokens = Md2Html::Tokenizer::tokenize('_Foo_')
 
     expect(tokens.first.type).to eq 'UNDERSCORE'
     expect(tokens.first.value).to eq '_'
@@ -26,7 +22,7 @@ describe Tokenizer do
   end
 
   it "tokenize paragraph" do
-    tokens = @tokenizer.tokenize("Hello, World!
+    tokens = Md2Html::Tokenizer::tokenize("Hello, World!
 This is a _quite_ **long** text for what we've been testing so far.
 
 And this is another para.")
@@ -35,7 +31,7 @@ And this is another para.")
   end
 
   it "tokenize text with dash" do
-    tokens = @tokenizer.tokenize('- first item')
+    tokens = Md2Html::Tokenizer::tokenize('- first item')
 
     expect(tokens.first.type).to eq 'DASH'
     expect(tokens.first.value).to eq '-'
