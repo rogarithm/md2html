@@ -1,4 +1,4 @@
-require_relative '../lib/tokenizer'
+require_relative '../lib/md2html/tokenizer'
 require 'pry'
 
 describe Tokenizer do
