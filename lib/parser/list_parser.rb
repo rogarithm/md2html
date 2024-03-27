@@ -1,5 +1,5 @@
 require_relative "base_parser"
-require_relative "parsers/concerns/matches_first"
+require_relative "concerns/matches_first"
 
 class ListParser < BaseParser
   include MatchesFirst

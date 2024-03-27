@@ -1,4 +1,4 @@
-require_relative "parsers/concerns/matches_plus"
+require_relative "concerns/matches_plus"
 
 class ListItemsAndNewlineParser < BaseParser
   include MatchesPlus
