@@ -5,10 +5,6 @@ end
 require 'pry'
 
 describe Md2Html::Parser do
-  def parse(markdown)
-    @parser.parse(Md2Html::Tokenizer::tokenize(markdown))
-  end
-
   it "makes node from markdown content" do
     tokens = Md2Html::Tokenizer::tokenize("__Foo__ and *text*.\n\nAnother para.")
     body_node = Md2Html::Parser::parse(tokens)
