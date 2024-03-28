@@ -32,4 +32,3 @@ file_list.each do |ruby_file|
   #마지막 줄에 module 끝을 나타내는 end를 적는다
   `echo 'end' >> #{ruby_file}`
 end
-#해당 파일의 들여쓰기를 refresh한다
