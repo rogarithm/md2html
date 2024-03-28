@@ -13,7 +13,7 @@ module Md2Html
     private
 
     def self.body_parser
-      @body_parser ||= Parser::ParserFactory.build(:body_parser)
+      @body_parser ||= ParserFactory.build(:body_parser)
     end
   end
 end
