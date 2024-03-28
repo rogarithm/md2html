@@ -6,13 +6,12 @@ require 'pry'
 
 describe Generator do
   before(:each) do
-    @parser    = Parser.new
     @generator = Generator.new
   end
 
   def generate(markdown)
     tokens = Md2Html::Tokenizer::tokenize(markdown)
-    ast    = @parser.parse(tokens)
+    ast    = Md2Html::Parser::parse(tokens)
     @generator.generate(ast)
   end
 

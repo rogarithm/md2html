@@ -1,15 +1,15 @@
 require_relative '../lib/md2html/parser/parser_factory'
 require 'pry'
 
-describe MatchesStar do
-  let(:ms) { Class.new { extend MatchesStar } }
-  let(:mf) { Class.new { extend MatchesFirst } }
-  let(:mp) { Class.new { extend MatchesPlus } }
+describe Md2Html::Parser::MatchesStar do
+  let(:ms) { Class.new { extend Md2Html::Parser::MatchesStar } }
+  let(:mf) { Class.new { extend Md2Html::Parser::MatchesFirst } }
+  let(:mp) { Class.new { extend Md2Html::Parser::MatchesPlus } }
 
   before(:each) do
-    @sentence_parser = ParserFactory.build(:sentence_parser)
-    @dash_parser = ParserFactory.build(:dash_parser)
-    @text_parser = ParserFactory.build(:text_parser)
+    @sentence_parser = Md2Html::Parser::ParserFactory.build(:sentence_parser)
+    @dash_parser = Md2Html::Parser::ParserFactory.build(:dash_parser)
+    @text_parser = Md2Html::Parser::ParserFactory.build(:text_parser)
   end
 
   it "matchesStar matches 0 or more" do
@@ -29,7 +29,7 @@ describe MatchesStar do
   it "matchesFirst matches only 1" do
     zero = Md2Html::Tokenizer::tokenize("\n")
     node = mf.match_first(zero, @dash_parser, @text_parser)
-    expect(node).to eq(Node.null)
+    expect(node).to eq(Md2Html::Parser::Node.null)
 
     one = Md2Html::Tokenizer::tokenize("ttt\n")
     node = mf.match_first(one, @dash_parser, @text_parser)
