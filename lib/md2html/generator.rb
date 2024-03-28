@@ -1,13 +1,15 @@
 require_relative "generator/body_visitor"
 
-class Generator
-  def generate(ast)
-    body_visitor.visit(ast)
-  end
+module Md2Html
+  module Generator
+    def self.generate(ast)
+      body_visitor.visit(ast)
+    end
 
-  private
+    private
 
-  def body_visitor
-    BodyVisitor.new
+    def self.body_visitor
+      BodyVisitor.new
+    end
   end
 end
