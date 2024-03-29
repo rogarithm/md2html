@@ -1,4 +1,6 @@
 require_relative "matches_first"
+require_relative "node"
+require_relative "list_node"
 
 module Md2Html
   module Parser

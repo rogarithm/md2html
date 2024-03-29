@@ -1,4 +1,5 @@
 require_relative 'base_parser'
+require_relative 'node'
 
 module Md2Html
   module Parser

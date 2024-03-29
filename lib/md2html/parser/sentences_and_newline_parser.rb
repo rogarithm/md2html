@@ -1,4 +1,7 @@
+require_relative "base_parser"
 require_relative "matches_star"
+require_relative "node"
+require_relative "paragraph_node"
 
 module Md2Html
   module Parser
