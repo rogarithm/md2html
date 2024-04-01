@@ -1,4 +1,5 @@
 require_relative "paragraph_visitor"
+require_relative "list_visitor"
 
 module Md2Html
   module Generator
