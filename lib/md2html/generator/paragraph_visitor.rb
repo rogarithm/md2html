@@ -1,19 +1,23 @@
 require_relative "sentence_visitor"
 
-class ParagraphVisitor
-  def visit(paragraph_node)
-    "<p>#{sentences_for(paragraph_node)}</p>"
-  end
+module Md2Html
+  module Generator
+    class ParagraphVisitor
+      def visit(paragraph_node)
+        "<p>#{sentences_for(paragraph_node)}</p>"
+      end
 
-  private
+      private
 
-  def sentences_for(paragraph_node)
-    paragraph_node.sentences.map do |sentences|
-      sentence_visitor.visit(sentences)
-    end.join
-  end
+      def sentences_for(paragraph_node)
+        paragraph_node.sentences.map do |sentences|
+          sentence_visitor.visit(sentences)
+        end.join
+      end
 
-  def sentence_visitor
-    @sentence_visitor ||= SentenceVisitor.new
+      def sentence_visitor
+        @sentence_visitor ||= SentenceVisitor.new
+      end
+    end
   end
 end

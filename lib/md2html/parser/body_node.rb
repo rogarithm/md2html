@@ -1,15 +1,19 @@
-class BodyNode
-  attr_reader :blocks, :consumed
-  def initialize(blocks:, consumed:)
-    @blocks = blocks
-    @consumed  = consumed
-  end
+module Md2Html
+  module Parser
+    class BodyNode
+      attr_reader :blocks, :consumed
+      def initialize(blocks:, consumed:)
+        @blocks = blocks
+        @consumed  = consumed
+      end
 
-  def present?
-    true
-  end
+      def present?
+        true
+      end
 
-  def null?
-    false
+      def null?
+        false
+      end
+    end
   end
 end

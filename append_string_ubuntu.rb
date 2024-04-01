@@ -1,7 +1,10 @@
 #!/usr/bin/env ruby
 
+path = ARGV[0]
+module_name = ARGV[1] ||= 'Md2Html'
+
 #lib 디렉토리 아래 루비 파일을 찾는다
-file_list = `find ./lib -name '*.rb'`.split("\n")
+file_list = `find ./lib/md2html/#{path} -name '*.rb'`.split("\n")
 
 #ruby_file = 'lib/generator/visitors/bold_visitor.rb'
 #각 루비 파일마다
@@ -25,8 +28,7 @@ file_list.each do |ruby_file|
   module_or_class_at = module_or_class_at + 1
   #'module Md2Html'을 덧붙인다
   `sed -i '#{module_or_class_at}i\\
-module Md2Html' #{ruby_file}`
+  module #{module_name}' #{ruby_file}`
   #마지막 줄에 module 끝을 나타내는 end를 적는다
   `echo 'end' >> #{ruby_file}`
 end
-#해당 파일의 들여쓰기를 refresh한다

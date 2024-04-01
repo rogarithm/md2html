@@ -4,16 +4,11 @@ Dir.glob('./lib/md2html/generator/*.rb').each do |file|
 end
 require 'pry'
 
-describe Generator do
-  before(:each) do
-    @parser    = Parser.new
-    @generator = Generator.new
-  end
-
+describe Md2Html::Generator do
   def generate(markdown)
     tokens = Md2Html::Tokenizer::tokenize(markdown)
-    ast    = @parser.parse(tokens)
-    @generator.generate(ast)
+    ast    = Md2Html::Parser::parse(tokens)
+    Md2Html::Generator::generate(ast)
   end
 
   it "generates html from paragraph" do
