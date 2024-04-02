@@ -5,7 +5,5 @@ module Md2Html
         "<li>#{list_item_node.value.strip}</li>"
       end
     end
-
-
   end
 end
