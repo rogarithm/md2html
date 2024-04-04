@@ -10,8 +10,13 @@ module Md2Html
         consumed      = 0
         parser        = with
 
+        puts "IN MATCHES_STAR"
+        puts "PARSER IS:"
+        p parser
         while true
           node = parser.match(tokens.offset(consumed))
+          puts "NODE IS:"
+          p node
           break if node.null?
           matched_nodes += [node]
           consumed      += node.consumed

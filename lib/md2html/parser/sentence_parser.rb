@@ -8,6 +8,7 @@ module Md2Html
 
       def match(tokens)
         match_first tokens, dash_parser, emphasis_parser, bold_parser, text_parser
+        puts "IN SENTENCE PARSER, TOKEN COUNT IS: #{tokens.count}"
       end
     end
   end

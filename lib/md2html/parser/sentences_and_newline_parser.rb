@@ -14,7 +14,10 @@ module Md2Html
         return Node.null unless tokens.peek_at(consumed, 'NEWLINE', 'NEWLINE')
         consumed += 2 # consume newlines
 
-        ParagraphNode.new(sentences: nodes, consumed: consumed)
+        pn = ParagraphNode.new(sentences: nodes, consumed: consumed)
+        puts "IN SENTENCES_AND_NEWLINE_PARSER, CONSUMED: #{pn.consumed}"
+        p pn.sentences
+        pn
       end
     end
   end
