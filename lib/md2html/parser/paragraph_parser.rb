@@ -7,7 +7,12 @@ module Md2Html
       include MatchesFirst
 
       def match(tokens)
-        match_first tokens, sentences_and_newline_parser, sentences_and_eof_parser
+        puts "IN PARAGRAPH_PARSER"
+        puts "SENTENCES_AND_EOF_PARSER IS"
+        p sentences_and_eof_parser
+        puts "SENTENCES_AND_NEWLINE_PARSER IS"
+        p sentences_and_newline_parser
+        match_first tokens, sentences_and_eof_parser, sentences_and_newline_parser
       end
     end
   end

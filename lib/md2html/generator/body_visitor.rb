@@ -11,7 +11,7 @@ module Md2Html
           elsif block.type == "LIST"
             list_visitor.visit(block)
           end
-        end.join
+        end.join << "\n"
       end
 
       private
