@@ -6,6 +6,9 @@ module Md2Html
   module Parser
     def self.parse(tokens)
       body = body_parser.match(tokens)
+      puts "tokens.count: #{tokens.count}"
+      p tokens
+      puts "body.consumed: #{body.consumed}"
       raise "Syntax error: tokens.count is not equal to body.consumed" unless tokens.count == body.consumed
       body
     end
