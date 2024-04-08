@@ -8,10 +8,13 @@ module Md2Html
       include MatchesFirst
 
       def match(tokens)
-        puts "IN SENTENCE PARSER"
-        puts "TOKEN COUNT IS: #{tokens.count}"
+        puts "Md2Html::Parser::SentenceParser TOKEN COUNT: #{tokens.count}"
         node = match_first(tokens, dash_parser, emphasis_parser, bold_parser, text_parser)
-        puts "SENTENCE PARSER'S RESULT IS: #{node}"
+        if node.null? == false
+          puts "Md2Html::Parser::SentenceParser RESULT: <@type=\"#{node.type}\", @value=\"#{node.value}\", @consumed=#{node.consumed}>" 
+        else
+          puts "Md2Html::Parser::SentenceParser RESULT: NullNode"
+        end
         node
       end
     end

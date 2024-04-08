@@ -20,8 +20,12 @@ module Md2Html
         end
 
         pn = ParagraphNode.new(sentences: nodes, consumed: consumed)
-        puts "IN SENTENCES_AND_NEWLINE_PARSER, CONSUMED: #{pn.consumed}"
-        p pn.sentences
+        puts "Md2Html::Parser::SentencesAndNewlineParser CONSUMED: #{pn.consumed}"
+        all_sentences = "["
+        pn.sentences.each {|s| all_sentences << "<@type=\"#{s.type}\", @value=\"#{s.value}\", @consumed=#{s.consumed}>, "}
+        all_sentences << "]"
+        puts "Md2Html::Parser::SentencesAndNewlineParser all_sentences: #{all_sentences}"
+
         pn
       end
     end
