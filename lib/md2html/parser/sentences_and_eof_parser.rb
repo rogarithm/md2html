@@ -12,7 +12,7 @@ module Md2Html
 
       def match(tokens)
         path = "#{File.dirname(__FILE__).split("/")[-2..-1].join("/")}/#{File.basename(__FILE__)}"
-        log = Logger.new(STDOUT)
+        log = Logger.new('.md2html.log')
         log.level = Logger::DEBUG
         log.datetime_format = "%H:%M:%S"
 

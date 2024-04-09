@@ -8,7 +8,7 @@ module Md2Html
   module Parser
     def self.parse(tokens)
       path = "#{File.dirname(__FILE__).split("/")[-1]}/#{File.basename(__FILE__)}"
-      log = Logger.new(STDOUT)
+      log = Logger.new('.md2html.log')
       log.level = Logger::DEBUG
       log.datetime_format = "%H:%M:%S"
 
