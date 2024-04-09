@@ -1,3 +1,5 @@
+require 'logger'
+
 require_relative "base_parser"
 require_relative "matches_first"
 
@@ -8,12 +10,17 @@ module Md2Html
       include MatchesFirst
 
       def match(tokens)
-        puts "Md2Html::Parser::SentenceParser TOKEN COUNT: #{tokens.count}"
+        path = "#{File.dirname(__FILE__).split("/")[-2..-1].join("/")}/#{File.basename(__FILE__)}"
+        log = Logger.new(STDOUT)
+        log.level = Logger::DEBUG
+        log.datetime_format = "%H:%M:%S"
+
+        log.debug("#{path} TOKEN COUNT: #{tokens.count}")
         node = match_first(tokens, dash_parser, emphasis_parser, bold_parser, text_parser)
         if node.null? == false
-          puts "Md2Html::Parser::SentenceParser RESULT: <@type=\"#{node.type}\", @value=\"#{node.value}\", @consumed=#{node.consumed}>" 
+          log.debug("#{path} RESULT: <@type=\"#{node.type}\", @value=\"#{node.value}\", @consumed=#{node.consumed}>")
         else
-          puts "Md2Html::Parser::SentenceParser RESULT: NullNode"
+          log.debug("#{path} RESULT: NullNode")
         end
         node
       end

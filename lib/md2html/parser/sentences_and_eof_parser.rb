@@ -1,3 +1,5 @@
+require 'logger'
+
 require_relative "base_parser"
 require_relative "matches_star"
 require_relative "node"
@@ -9,6 +11,11 @@ module Md2Html
       include MatchesStar
 
       def match(tokens)
+        path = "#{File.dirname(__FILE__).split("/")[-2..-1].join("/")}/#{File.basename(__FILE__)}"
+        log = Logger.new(STDOUT)
+        log.level = Logger::DEBUG
+        log.datetime_format = "%H:%M:%S"
+
         nodes, consumed = match_star tokens, with: sentence_parser
         return Node.null if nodes.empty?
         if tokens.peek_at(consumed, 'NEWLINE', 'EOF')
@@ -20,11 +27,11 @@ module Md2Html
         end
 
         pn = ParagraphNode.new(sentences: nodes, consumed: consumed)
-        puts "Md2Html::Parser::SentencesAndEofParser CONSUMED: #{pn.consumed}"
+        log.debug("#{path} CONSUMED: #{pn.consumed}")
         all_sentences = "["
         pn.sentences.each {|s| all_sentences << "<@type=\"#{s.type}\", @value=\"#{s.value}\", @consumed=#{s.consumed}>, "}
         all_sentences << "]"
-        puts "Md2Html::Parser::SentencesAndEofParser all_sentences: #{all_sentences}"
+        log.debug("#{path} all_sentences: #{all_sentences}")
         pn
       end
     end

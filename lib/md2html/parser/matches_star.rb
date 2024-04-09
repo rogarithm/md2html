@@ -1,3 +1,5 @@
+require 'logger'
+
 module Md2Html
   module Parser
     module MatchesStar
@@ -6,14 +8,19 @@ module Md2Html
       # star.
       #
       def match_star(tokens, with:)
+        path = "#{File.dirname(__FILE__).split("/")[-2..-1].join("/")}/#{File.basename(__FILE__)}"
+        log = Logger.new(STDOUT)
+        log.level = Logger::DEBUG
+        log.datetime_format = "%H:%M:%S"
+
         matched_nodes = []
         consumed      = 0
         parser        = with
 
-        puts "Md2Html::Parser::MatchesStar PARSER: #{parser.class}"
+        log.debug("#{path} PARSER: #{parser.class}")
         while true
           node = parser.match(tokens.offset(consumed))
-          puts "Md2Html::Parser::MatchesStar NODE: #{node.class}"
+          log.debug("#{path} NODE: #{node.class}")
 
           break if node.null?
           matched_nodes += [node]
