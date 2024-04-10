@@ -6,9 +6,9 @@ require 'pry'
 
 describe Md2Html::Parser do
   it "makes node from markdown content" do
-    tokens = Md2Html::Tokenizer::tokenize("__Foo__ and *text*.\n\nAnother para.")
+    tokens = Md2Html::Tokenizer::tokenize("__Foo__ and *text*.\nAnother para.")
     body_node = Md2Html::Parser::parse(tokens)
-    expect(body_node.consumed).to eq 14
+    expect(body_node.consumed).to eq 13
   end
 
   it "parse text that has dash character" do
@@ -51,8 +51,8 @@ describe Md2Html::Parser do
   end
 
   it "parse plain paragraph and list items of the same level" do
-    tokens = Md2Html::Tokenizer::tokenize("- foo\n- bar\n- baz\n\n__Foo__ and *text*.\n\nAnother para.")
+    tokens = Md2Html::Tokenizer::tokenize("- foo\n- bar\n- baz\n\n__Foo__ and *text*.\nAnother para.")
     nodes = Md2Html::Parser::parse(tokens)
-    expect(nodes.consumed).to eq 24
+    expect(nodes.consumed).to eq 23
   end
 end

@@ -17,6 +17,7 @@ module Md2Html
         consumed      = 0
         parser        = with
 
+        log.debug("#{path} TOKEN: #{tokens}")
         log.debug("#{path} PARSER: #{parser.class}")
         while true
           node = parser.match(tokens.offset(consumed))

@@ -1,3 +1,5 @@
+require 'logger'
+
 require_relative "node"
 
 module Md2Html
@@ -9,8 +11,15 @@ module Md2Html
       # returns a null node.
       #
       def match_first(tokens, *parsers)
+        path = "#{File.dirname(__FILE__).split("/")[-2..-1].join("/")}/#{File.basename(__FILE__)}"
+        log = Logger.new('.md2html.log')
+        log.level = Logger::DEBUG
+        log.datetime_format = "%H:%M:%S"
+
         parsers.each do |parser|
+          log.debug("#{path} parser: #{parser}")
           node = parser.match(tokens)
+          log.debug("#{path} result: #{node}")
           return node if node.present?
         end
         Node.null
