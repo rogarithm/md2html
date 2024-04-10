@@ -19,7 +19,6 @@ module Md2Html
 
       body = body_parser.match(tokens)
 
-      log.debug("#{path} body.consumed: #{body.consumed}")
       raise "Syntax error: tokens.count is not equal to body.consumed" unless tokens.count == body.consumed
       body
     end
