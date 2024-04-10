@@ -1,20 +1,9 @@
-예상한 것과 달리 html 변환이 잘 되지 않고 있다
- 파일 형태로 입력받고, 결과 파일과 내용을 비교하는 형식으로 바꾸려고 한다
- 어떤 걸 먼저 해야할까?
- 우선 지금 만들어놓은 최상위 레이어 테스트를 파일 형태로 바꿔보자
+테스트를 파일 기반으로 바꾸기
+ 기준 디렉토리 아래의 테스트를 모두 실행할 수 있다
+두 개 이상의 \n 문자열을 어떻게 처리해야 할까?
 
-
-동일한 위계의 list item 여러 개와 일반적인 단락을 같이 파싱할 수 있어야 한다
-
-2단계 위계의 list 하나
-2단계 위계의 list 여러 개
-
-matches_*의 반환값
- matches_first는 node만 반환하고 node, consumed 형태로 반환하지 않는다.
- 왜 그런거지? 바꿔야 하나?
-concern_spec에서 describe MatchesStar 대신 describe Concern 쓰도록 모듈 구성 바꾸기
- MatchesStar, MatchesFirst 앞에 Concern:: 붙여야 한다
-
+2단계 위계의 list 하나를 파싱할 수 있다
+2단계 위계의 list 여러 개를 파싱할 수 있다
 nested list 문법은 어떤 형식이어야 하는가?
  앞이 newline
  newline 이후로 별도의 space 없이 - 문자
@@ -26,12 +15,8 @@ dash 문자를 별도의 토큰으로 분류해야 하나?
  글 중간에 나오는 dash 문자는 리스트를 나타내는 토큰이 아니다
  space* dash 형식인 경우에만 리스트용 dash 토큰으로 분류할 수 있을 것 같다
 
-match_star 쓰는 곳에선 parser를 하나만 쓰는지 확인하기
- find를 쓰자
- lib 디렉토리 아래 모든 루비 파일에 대해
- find ./lib -type file -name "*.rb" |\
- match_star를 포함하는 줄을 검색하고, 그 내용을 출력한다
- xargs grep -e ".*match_star.*"
- 줄 번호도 함께!
- -n
- => find ./lib -type file -name "*.rb" | xargs grep -e ".*match_star.*" -n
+matches_*의 반환값
+ matches_first는 node만 반환하고 node, consumed 형태로 반환하지 않는다.
+ 왜 그런거지? 바꿔야 하나?
+concern_spec에서 describe MatchesStar 대신 describe Concern 쓰도록 모듈 구성 바꾸기
+ MatchesStar, MatchesFirst 앞에 Concern:: 붙여야 한다

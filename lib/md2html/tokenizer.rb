@@ -34,9 +34,7 @@ module Md2Html
 
     def self.scan_one_token(plain_markdown)
       TOKEN_SCANNERS.each do |scanner|
-        #puts "SCANNER TYPE: #{scanner}"
         token = scanner.from_string(plain_markdown)
-        #puts "RETRIEVED TOKEN: #{token}"
         return token unless token.null?
       end
       raise "The scanners could not match the given input: #{plain_markdown}"
