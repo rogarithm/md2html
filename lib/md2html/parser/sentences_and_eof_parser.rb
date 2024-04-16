@@ -18,12 +18,12 @@ module Md2Html
 
         nodes, consumed = match_star tokens, with: sentence_parser
         return Node.null if nodes.empty?
-        if tokens.peek_at(consumed, 'EOF')
-          consumed += 1
+        if tokens.peek_at(consumed, 'NEWLINE', 'NEWLINE', 'EOF')
+          consumed += 3
         elsif tokens.peek_at(consumed, 'NEWLINE', 'EOF')
           consumed += 2
-        elsif tokens.peek_at(consumed, 'NEWLINE', 'NEWLINE', 'EOF')
-          consumed += 3
+        elsif tokens.peek_at(consumed, 'EOF')
+          consumed += 1
         else
           return Node.null
         end
