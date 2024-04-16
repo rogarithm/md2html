@@ -1,3 +1,9 @@
+문제가 왜 생기고 있나?
+ sentences_and_eof_parser가 텍스트+newline+eof 문자열을 파싱할 때, newline+eof 문자열에 대해서는 길이만 늘리고 node에 추가하지 않는다.
+ 그러면 sentences_and_eof_parser에게 match를 호출하라고 요청한 block_parser에선 match_star로 요청했기 때문에 아직 처리되지 않고 남은 token인 newline+eof에 대해 다시 파싱하게 된다.
+ newline+eof는 아무데도 일치하지 않게 되고, 결국 NullNode를 반환한다.
+ 결과적으로 매칭이 제대로 안되어서 오류가 발생하고 있다.
+
 로그
  메시지를 껐다 켰다 하기
  match_first에서 매칭된 파서만 로그에 적어주기

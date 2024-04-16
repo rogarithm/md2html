@@ -17,9 +17,9 @@ module Md2Html
         log.datetime_format = "%H:%M:%S"
 
         parsers.each do |parser|
-          log.debug("#{path} parser: #{parser}")
           node = parser.match(tokens)
-          log.debug("#{path} result: #{node}")
+          log.debug("#{path} parser: #{parser}") if node.present?
+          log.debug("#{path} result: #{node}") if node.present?
           return node if node.present?
         end
         Node.null

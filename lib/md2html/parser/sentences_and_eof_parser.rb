@@ -17,6 +17,7 @@ module Md2Html
         log.datetime_format = "%H:%M:%S"
 
         nodes, consumed = match_star tokens, with: sentence_parser
+        log.debug("#{path} ---------HERE--------- NODES: #{nodes}, CONSUMED: #{consumed}")
         return Node.null if nodes.empty?
         if tokens.peek_at(consumed, 'NEWLINE', 'NEWLINE', 'EOF')
           consumed += 3
