@@ -20,7 +20,7 @@ module Md2Html
       private
 
       def visitor_for(node)
-        SENTENCE_VISITORS.fetch(node.type) { raise "Invalid sentence node type" }.new 
+        SENTENCE_VISITORS.fetch(node.type) { raise "Invalid sentence node type! It might be there's no sufficient visitor for a character or markdown element to generate html. If it's the case, consider add a new visitor for that." }.new
       end
     end
   end
