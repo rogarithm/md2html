@@ -1,6 +1,7 @@
 require_relative 'bold_visitor'
 require_relative 'emphasis_visitor'
 require_relative 'text_visitor'
+require_relative 'dash_visitor'
 
 module Md2Html
   module Generator
@@ -8,7 +9,8 @@ module Md2Html
       SENTENCE_VISITORS = {
         "BOLD"     => BoldVisitor,
         "EMPHASIS" => EmphasisVisitor,
-        "TEXT"     => TextVisitor
+        "TEXT"     => TextVisitor,
+        "DASH"     => DashVisitor
       }.freeze
 
       def visit(node)
