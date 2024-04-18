@@ -16,10 +16,13 @@ module Md2Html
         log.level = Logger::DEBUG
         log.datetime_format = "%H:%M:%S"
 
+        log.debug("#{path} start parsing sentences...")
         parsers.each do |parser|
           node = parser.match(tokens)
-          log.debug("#{path} parser: #{parser}") if node.present?
-          log.debug("#{path} result: #{node}") if node.present?
+          log.debug("#{path} parse with #{parser}") if node.present?
+          log.debug("#{path} matching result is: #{node}") if node.present?
+          log.debug("#{path} when paragraph, its sentence is: #{node.sentences}") if node.present? and node.type == 'PARAGRAPH'
+        log.debug("#{path} stop parsing sentences...") if node.present? and node.type == 'PARAGRAPH'
           return node if node.present?
         end
         Node.null

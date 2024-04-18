@@ -15,12 +15,12 @@ module Md2Html
         log.level = Logger::DEBUG
         log.datetime_format = "%H:%M:%S"
 
-        log.debug("#{path} TOKEN COUNT: #{tokens.count}")
+        log.debug("#{path} parsing #{tokens.count} tokens...")
         node = match_first(tokens, dash_parser, emphasis_parser, bold_parser, text_parser)
         if node.null? == false
-          log.debug("#{path} RESULT: <@type=\"#{node.type}\", @value=\"#{node.value}\", @consumed=#{node.consumed}>")
+          log.debug("#{path} parse success. detail: <@type=\"#{node.type}\", @value=\"#{node.value}\", @consumed=#{node.consumed}>")
         else
-          log.debug("#{path} RESULT: NullNode")
+          log.debug("#{path} parse failed. result is NullNode")
         end
         node
       end
