@@ -16,24 +16,27 @@ module Md2Html
         log.level = Logger::DEBUG
         log.datetime_format = "%H:%M:%S"
 
+        log.debug("#{path} start parsing sentences...")
         nodes, consumed = match_star tokens, with: sentence_parser
         return Node.null if nodes.empty?
-        if tokens.peek_at(consumed, 'EOF')
-          consumed += 1
+
+        if tokens.peek_at(consumed, 'NEWLINE', 'NEWLINE', 'EOF')
+          consumed += 3
         elsif tokens.peek_at(consumed, 'NEWLINE', 'EOF')
           consumed += 2
-        elsif tokens.peek_at(consumed, 'NEWLINE', 'NEWLINE', 'EOF')
-          consumed += 3
+        elsif tokens.peek_at(consumed, 'EOF')
+          consumed += 1
         else
           return Node.null
         end
 
         pn = ParagraphNode.new(sentences: nodes, consumed: consumed)
-        log.debug("#{path} CONSUMED: #{pn.consumed}")
+        log.debug("#{path} #{pn.consumed} tokens were parsed, with eof, nr chars included")
         all_sentences = "["
         pn.sentences.each {|s| all_sentences << "<@type=\"#{s.type}\", @value=\"#{s.value}\", @consumed=#{s.consumed}>, "}
         all_sentences << "]"
         log.debug("#{path} all_sentences: #{all_sentences}")
+        log.debug("#{path} stop parsing sentences...")
         pn
       end
     end

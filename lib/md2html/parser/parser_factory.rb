@@ -10,8 +10,6 @@ require_relative "body_parser"
 require_relative "dash_parser"
 require_relative "list_parser"
 require_relative "list_item_parser"
-require_relative "list_item_and_newline_parser"
-require_relative "list_item_and_eof_parser"
 require_relative "list_items_and_newline_parser"
 require_relative "list_items_and_eof_parser"
 
@@ -31,8 +29,6 @@ module Md2Html
         dash_parser:                   DashParser,
         list_parser:                   ListParser,
         list_item_parser:              ListItemParser,
-        list_item_and_newline_parser:  ListItemAndNewlineParser,
-        list_item_and_eof_parser:      ListItemAndEofParser,
         list_items_and_newline_parser: ListItemsAndNewlineParser,
         list_items_and_eof_parser:     ListItemsAndEofParser
       }.freeze
