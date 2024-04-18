@@ -35,9 +35,11 @@ describe Md2Html::Tokenizer::TokenList do
 
   it "grab() picks tokens of smaller count than total token count" do
     token_list = Md2Html::Tokenizer::tokenize('_Foo_')
-    grabbed = token_list.grab!(1) 
+    grabbed = token_list.grab!(2)
     expect(grabbed[0].type).to eq 'UNDERSCORE'
     expect(grabbed[0].value).to eq '_'
+    expect(grabbed[1].type).to eq 'TEXT'
+    expect(grabbed[1].value).to eq 'Foo'
   end
 
   it "grab raise error when token count exceeds total token count" do
