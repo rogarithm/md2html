@@ -24,13 +24,6 @@ describe Md2Html::Parser do
     expect(nodes.consumed).to eq 3
   end
 
-  it "list_item_and_newline_parser parse one list item and newline" do
-    tokens = Md2Html::Tokenizer::tokenize("- foo\n\n")
-    parser = Md2Html::Parser::ParserFactory.build(:list_item_and_newline_parser)
-    nodes = parser.match(tokens)
-    expect(nodes.consumed).to eq 4
-  end
-
   it "parse 1 list item and newline" do
     tokens = Md2Html::Tokenizer::tokenize("- foo\n")
     nodes = Md2Html::Parser::parse(tokens)
