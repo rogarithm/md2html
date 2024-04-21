@@ -48,4 +48,24 @@ describe Md2Html::Parser do
     nodes = Md2Html::Parser::parse(tokens)
     expect(nodes.consumed).to eq 23
   end
+
+  it "parse level 3 header" do
+    tokens = Md2Html::Tokenizer::tokenize("### section")
+    parser = Md2Html::Parser::ParserFactory.build(:header_parser)
+
+    nodes = parser.match(tokens)
+
+    expect(nodes.consumed).to eq 4
+    expect(nodes.value).to eq 'section'
+  end
+
+  it "parse level 4 header" do
+    tokens = Md2Html::Tokenizer::tokenize("#### subsection")
+    parser = Md2Html::Parser::ParserFactory.build(:header_parser)
+
+    nodes = parser.match(tokens)
+
+    expect(nodes.consumed).to eq 5
+    expect(nodes.value).to eq 'subsection'
+  end
 end
