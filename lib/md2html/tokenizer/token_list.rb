@@ -49,6 +49,10 @@ module Md2Html
         tokens[2]
       end
 
+      def nth(n)
+        tokens[n - 1]
+      end
+
       def to_s
         "[\n\t#{tokens.map(&:to_s).join(",\n\t")}\n]"
       end
