@@ -1,4 +1,4 @@
-require 'logger'
+require_relative '../util/logger_factory'
 
 module Md2Html
   module Parser
@@ -8,21 +8,16 @@ module Md2Html
       # star.
       #
       def match_star(tokens, with:)
-        path = "#{File.dirname(__FILE__).split("/")[-2..-1].join("/")}/#{File.basename(__FILE__)}"
-        log = Logger.new('.md2html.log')
-        log.level = Logger::DEBUG
-        log.datetime_format = "%H:%M:%S"
+        @logger = Md2Html::Util::LoggerFactory.make_logger()
 
         matched_nodes = []
         consumed      = 0
         parser        = with
 
-        log.debug("#{path} with #{parser.class},")
-        log.debug("#{path} parsing tokens...: #{tokens}")
+        make_log_msg_before(@logger, parser, tokens)
         while true
-          log.debug("#{path} now parsing tokens from #{consumed}th element...")
           node = parser.match(tokens.offset(consumed))
-          log.debug("#{path} matched node is: #{node.class}")
+          make_log_msg_after(@logger, node, consumed)
 
           break if node.null?
           matched_nodes += [node]
@@ -30,6 +25,18 @@ module Md2Html
         end
 
         [matched_nodes, consumed]
+      end
+
+      def make_log_msg_before(logger, parser, tokens)
+        path = "#{File.dirname(__FILE__).split("/")[-2..-1].join("/")}/#{File.basename(__FILE__)}"
+        logger.debug("#{path} with #{parser.class},")
+        logger.debug("#{path} parsing tokens...: #{tokens}")
+      end
+
+      def make_log_msg_after(logger, node, consumed)
+        path = "#{File.dirname(__FILE__).split("/")[-2..-1].join("/")}/#{File.basename(__FILE__)}"
+        logger.debug("#{path} now parsing tokens from #{consumed}th element...")
+        logger.debug("#{path} matched node is: #{node.class}")
       end
     end
   end
