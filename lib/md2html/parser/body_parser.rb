@@ -11,7 +11,7 @@ module Md2Html
       include MatchesStar
 
       def initialize
-        @logger = Md2Html::Util::LoggerFactory.make_logger()
+        @logger ||= Md2Html::Util::LoggerFactory.make_logger()
       end
 
       def match(tokens)

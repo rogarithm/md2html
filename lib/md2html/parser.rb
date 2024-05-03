@@ -6,7 +6,7 @@ require_relative 'util/logger_factory'
 module Md2Html
   module Parser
     def self.parse(tokens)
-      @logger = Md2Html::Util::LoggerFactory.make_logger()
+      @logger ||= Md2Html::Util::LoggerFactory.make_logger()
       make_log_msg(@logger, tokens)
 
       body = body_parser.match(tokens)

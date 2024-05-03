@@ -11,7 +11,7 @@ module Md2Html
       # returns a null node.
       #
       def match_first(tokens, *parsers)
-        @logger = Md2Html::Util::LoggerFactory.make_logger()
+        @logger ||= Md2Html::Util::LoggerFactory.make_logger()
 
         parsers.each do |parser|
           node = parser.match(tokens)

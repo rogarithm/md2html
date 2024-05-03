@@ -9,7 +9,7 @@ module Md2Html
       include MatchesFirst
 
       def initialize
-        @logger = Md2Html::Util::LoggerFactory.make_logger()
+        @logger ||= Md2Html::Util::LoggerFactory.make_logger()
       end
 
       def match(tokens)

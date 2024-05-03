@@ -8,7 +8,7 @@ module Md2Html
       # star.
       #
       def match_star(tokens, with:)
-        @logger = Md2Html::Util::LoggerFactory.make_logger()
+        @logger ||= Md2Html::Util::LoggerFactory.make_logger()
 
         matched_nodes = []
         consumed      = 0
