@@ -14,10 +14,10 @@ module Md2Html
         consumed      = 0
         parser        = with
 
-        make_log_msg_before(@logger, parser, tokens)
+        MatchesStar::make_log_msg_before(@logger, parser, tokens)
         while true
           node = parser.match(tokens.offset(consumed))
-          make_log_msg_after(@logger, node, consumed)
+          MatchesStar::make_log_msg_after(@logger, node, consumed)
 
           break if node.null?
           matched_nodes += [node]
@@ -27,13 +27,13 @@ module Md2Html
         [matched_nodes, consumed]
       end
 
-      def make_log_msg_before(logger, parser, tokens)
+      def self.make_log_msg_before(logger, parser, tokens)
         path = "#{File.dirname(__FILE__).split("/")[-2..-1].join("/")}/#{File.basename(__FILE__)}"
         logger.debug("#{path} with #{parser.class},")
         logger.debug("#{path} parsing tokens...: #{tokens}")
       end
 
-      def make_log_msg_after(logger, node, consumed)
+      def self.make_log_msg_after(logger, node, consumed)
         path = "#{File.dirname(__FILE__).split("/")[-2..-1].join("/")}/#{File.basename(__FILE__)}"
         logger.debug("#{path} now parsing tokens from #{consumed}th element...")
         logger.debug("#{path} matched node is: #{node.class}")
