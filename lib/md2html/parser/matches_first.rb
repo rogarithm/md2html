@@ -1,6 +1,6 @@
-require 'logger'
-
 require_relative "node"
+
+require_relative '../util/logger_factory'
 
 module Md2Html
   module Parser
@@ -11,21 +11,22 @@ module Md2Html
       # returns a null node.
       #
       def match_first(tokens, *parsers)
-        path = "#{File.dirname(__FILE__).split("/")[-2..-1].join("/")}/#{File.basename(__FILE__)}"
-        log = Logger.new('.md2html.log')
-        log.level = Logger::DEBUG
-        log.datetime_format = "%H:%M:%S"
+        @logger = Md2Html::Util::LoggerFactory.make_logger()
 
-        log.debug("#{path} start parsing sentences...")
         parsers.each do |parser|
           node = parser.match(tokens)
-          log.debug("#{path} parse with #{parser}") if node.present?
-          log.debug("#{path} matching result is: #{node}") if node.present?
-          log.debug("#{path} when paragraph, its sentence is: #{node.sentences}") if node.present? and node.type == 'PARAGRAPH'
-        log.debug("#{path} stop parsing sentences...") if node.present? and node.type == 'PARAGRAPH'
+          make_log_msg(@logger, parser, node) if node.present?
           return node if node.present?
         end
         Node.null
+      end
+
+      def make_log_msg(logger, parser, node)
+        path = "#{File.dirname(__FILE__).split("/")[-2..-1].join("/")}/#{File.basename(__FILE__)}"
+        logger.debug("#{path} parse with #{parser}")
+        logger.debug("#{path} matching result is: #{node}")
+        logger.debug("#{path} when paragraph, its sentence is: #{node.sentences}") if node.type == 'PARAGRAPH'
+        logger.debug("#{path} stop parsing sentences...") if node.type == 'PARAGRAPH'
       end
     end
   end
