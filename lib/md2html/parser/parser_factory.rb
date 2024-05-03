@@ -37,7 +37,7 @@ module Md2Html
 
       def self.build(name, *args, &block)
         parser = PARSERS.fetch(name.to_sym) { raise "Invalid parser name: #{name}" }
-          cache[parser] = parser.new(*args, &block) if cache[parser].nil?
+        cache[parser] = parser.new(*args, &block) if cache[parser].nil?
         cache[parser]
       end
 
