@@ -15,13 +15,13 @@ module Md2Html
 
         parsers.each do |parser|
           node = parser.match(tokens)
-          make_log_msg(@logger, parser, node) if node.present?
+          MatchesFirst::make_log_msg(@logger, parser, node) if node.present?
           return node if node.present?
         end
         Node.null
       end
 
-      def make_log_msg(logger, parser, node)
+      def self.make_log_msg(logger, parser, node)
         path = "#{File.dirname(__FILE__).split("/")[-2..-1].join("/")}/#{File.basename(__FILE__)}"
         logger.debug("#{path} parse with #{parser}")
         logger.debug("#{path} matching result is: #{node}")
