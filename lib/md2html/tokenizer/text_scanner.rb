@@ -10,7 +10,7 @@ module Md2Html
       def self.from_string(plain_markdown)
         text = plain_markdown
           .each_char
-          .take_while { |char| SimpleScanner.from_string(char).null? }
+          .take_while { |char| SimpleScanner.from_string(char).present? == false }
           .join('')
         Token.new(type: 'TEXT', value: text)
       rescue InvalidTokenError
