@@ -11,7 +11,7 @@ module Md2Html
 
       body = body_parser.match(tokens)
 
-      raise "Syntax error: tokens.count is not equal to body.consumed" unless tokens.count == body.consumed
+      raise "Syntax error: #{tokens.size} is not equal to #{body.consumed}" if tokens.size != body.consumed
       body
     end
 
@@ -23,7 +23,7 @@ module Md2Html
 
     def self.make_log_msg(logger, tokens)
       path = "#{File.dirname(__FILE__).split("/")[-1]}/#{File.basename(__FILE__)}"
-      logger.debug("#{path} tokens.count: #{tokens.count}")
+      logger.debug("#{path} tokens.size: #{tokens.size}")
       all_tokens_info = ""
       tokens.each {|t| all_tokens_info << "#{t.value}(#{t.type})"}
       logger.debug("#{path} all_tokens_info: #{all_tokens_info}")

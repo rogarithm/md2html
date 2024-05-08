@@ -21,7 +21,7 @@ module Md2Html
 
       def make_log_msg_before(logger, tokens)
         path = "#{File.dirname(__FILE__).split("/")[-2..-1].join("/")}/#{File.basename(__FILE__)}"
-        logger.debug("#{path} parsing #{tokens.count} tokens...")
+        logger.debug("#{path} parsing #{tokens.size} tokens...")
       end
 
       def make_log_msg_after(logger, node)

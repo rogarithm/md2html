@@ -41,6 +41,10 @@ module Md2Html
         TokenList.new(tokens[index..-1])
       end
 
+      def size
+        tokens.size
+      end
+
       def second
         tokens[1]
       end
