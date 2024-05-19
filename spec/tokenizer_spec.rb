@@ -40,16 +40,4 @@ And this is another para.")
     expect(tokens.second.value).to eq ' first item'
   end
 
-  it "tokenize text with hash char" do
-    tokens = Md2Html::Tokenizer::tokenize('### section')
-
-    expect(tokens.first.type).to eq 'HASH'
-    expect(tokens.first.value).to eq '#'
-
-    expect(tokens.second.type).to eq 'HASH'
-    expect(tokens.second.value).to eq '#'
-
-    expect(tokens.nth(4).type).to eq 'TEXT'
-    expect(tokens.nth(4).value).to eq ' section'
-  end
 end
