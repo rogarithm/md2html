@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-find ./lib -type file -name "*.rb" | xargs grep -e ".*match_star.*" -n
+printf `find ./lib -type file -name "*.rb" | xargs grep -e "#{ARGV[0]}" -n`
 
 # match_star 쓰는 곳에선 parser를 하나만 쓰는지 확인하기
 #  find를 쓰자
