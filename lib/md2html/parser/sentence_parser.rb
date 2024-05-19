@@ -14,7 +14,7 @@ module Md2Html
 
       def match(tokens)
         make_log_msg_before(@logger, tokens)
-        node = match_first(tokens, dash_parser, emphasis_parser, bold_parser, text_parser)
+        node = match_first(tokens, inline_parser, text_parser)
         make_log_msg_after(@logger, node)
         node
       end

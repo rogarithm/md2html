@@ -8,7 +8,7 @@ describe Md2Html::Parser::MatchesStar do
 
   before(:each) do
     @sentence_parser = Md2Html::Parser::ParserFactory.build(:sentence_parser)
-    @dash_parser = Md2Html::Parser::ParserFactory.build(:dash_parser)
+    @inline_parser = Md2Html::Parser::ParserFactory.build(:inline_parser)
     @text_parser = Md2Html::Parser::ParserFactory.build(:text_parser)
   end
 
@@ -28,15 +28,15 @@ describe Md2Html::Parser::MatchesStar do
 
   it "matchesFirst matches only 1" do
     zero = Md2Html::Tokenizer::tokenize("\n")
-    node = mf.match_first(zero, @dash_parser, @text_parser)
+    node = mf.match_first(zero, @inline_parser, @text_parser)
     expect(node).to eq(Md2Html::Parser::Node.null)
 
     one = Md2Html::Tokenizer::tokenize("ttt\n")
-    node = mf.match_first(one, @dash_parser, @text_parser)
+    node = mf.match_first(one, @inline_parser, @text_parser)
     expect(node.consumed).to eq(1)
 
     two = Md2Html::Tokenizer::tokenize("- ttt\n")
-    node = mf.match_first(two, @dash_parser, @text_parser)
+    node = mf.match_first(two, @inline_parser, @text_parser)
     expect(node.consumed).to eq(1)
   end
 

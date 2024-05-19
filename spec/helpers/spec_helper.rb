@@ -32,6 +32,21 @@ RSpec.configure do |config|
     expectations.include_chain_clauses_in_custom_matcher_descriptions = true
   end
 
+  RSpec::Matchers.define :eq_node do |expected_node|
+    match do |actual_node|
+      actual_node.type == expected_node.type &&
+        actual_node.value == expected_node.value &&
+        actual_node.consumed == expected_node.consumed
+    end
+    failure_message do |actual_node|
+      "expected that #{actual_node} would have all the attributes the same as #{expected_node}. Attributes:\n
+      ACTUAL | EXPECTED\n
+      #{actual_node.type} | #{expected_node.type}\n
+      #{actual_node.value} | #{expected_node.value}\n
+      #{actual_node.consumed} | #{expected_node.consumed}\n"
+    end
+  end
+
   # rspec-mocks config goes here. You can use an alternate test double
   # library (such as bogus or mocha) by changing the `mock_with` option here.
   config.mock_with :rspec do |mocks|
