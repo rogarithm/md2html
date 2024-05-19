@@ -12,7 +12,6 @@ require_relative "list_parser"
 require_relative "list_item_parser"
 require_relative "list_items_and_newline_parser"
 require_relative "list_items_and_eof_parser"
-require_relative "header_parser"
 
 module Md2Html
   module Parser
@@ -31,8 +30,7 @@ module Md2Html
         list_parser:                   ListParser,
         list_item_parser:              ListItemParser,
         list_items_and_newline_parser: ListItemsAndNewlineParser,
-        list_items_and_eof_parser:     ListItemsAndEofParser,
-        header_parser:                 HeaderParser
+        list_items_and_eof_parser:     ListItemsAndEofParser
       }.freeze
 
       def self.build(name, *args, &block)
