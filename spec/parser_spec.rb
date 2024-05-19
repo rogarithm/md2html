@@ -3,8 +3,23 @@ Dir.glob('./lib/md2html/parser/*.rb').each do |file|
   require file
 end
 require 'pry'
+require_relative './helpers/spec_helper'
 
 describe Md2Html::Parser do
+
+  it "inline_parser can parse bold, emphasis, dash element, which are inline elements" do
+    parser = Md2Html::Parser::ParserFactory.build(:inline_parser)
+
+    bold_token = Md2Html::Tokenizer::tokenize("**foo**")
+    expect(parser.match(bold_token)).to eq_node(Md2Html::Parser::Node.new(type: 'BOLD', value: bold_token.third.value, consumed: 5))
+
+    emphasis_token = Md2Html::Tokenizer::tokenize("*foo*")
+    expect(parser.match(emphasis_token)).to eq_node(Md2Html::Parser::Node.new(type: 'EMPHASIS', value: emphasis_token.second.value, consumed: 3))
+
+    dash_token = Md2Html::Tokenizer::tokenize("-")
+    expect(parser.match(dash_token)).to eq_node(Md2Html::Parser::Node.new(type: 'DASH', value: dash_token.first.value, consumed: 1))
+  end
+
   it "makes node from markdown content" do
     tokens = Md2Html::Tokenizer::tokenize("__Foo__ and *text*.\nAnother para.")
     body_node = Md2Html::Parser::parse(tokens)

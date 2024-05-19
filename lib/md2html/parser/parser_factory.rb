@@ -1,3 +1,4 @@
+require_relative "inline_parser"
 require_relative "bold_parser"
 require_relative "emphasis_parser"
 require_relative "sentence_parser"
@@ -17,6 +18,7 @@ module Md2Html
   module Parser
     class ParserFactory
       PARSERS = {
+        inline_parser:                 InlineParser,
         bold_parser:                   BoldParser,
         emphasis_parser:               EmphasisParser,
         text_parser:                   TextParser,
