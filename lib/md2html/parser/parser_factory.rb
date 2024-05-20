@@ -8,6 +8,7 @@ require_relative "sentences_and_newline_parser"
 require_relative "body_parser"
 require_relative "list_parser"
 require_relative "list_item_parser"
+require_relative "list_items_parser"
 require_relative "list_items_and_newline_parser"
 require_relative "list_items_and_eof_parser"
 
@@ -25,6 +26,7 @@ module Md2Html
         body_parser:                   BodyParser,
         list_parser:                   ListParser,
         list_item_parser:              ListItemParser,
+        list_items_parser:             ListItemsParser,
         list_items_and_newline_parser: ListItemsAndNewlineParser,
         list_items_and_eof_parser:     ListItemsAndEofParser
       }.freeze
