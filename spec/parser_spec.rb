@@ -20,6 +20,34 @@ describe Md2Html::Parser do
     expect(parser.match(dash_token)).to eq_node(Md2Html::Parser::Node.new(type: 'DASH', value: dash_token.first.value, consumed: 1))
   end
 
+  it "list_items_parser can parse list items ends with eof or newline" do
+    parser = Md2Html::Parser::ParserFactory.build(:list_items_parser)
+
+    list_nl_eof_token = Md2Html::Tokenizer::tokenize("- foo\n")
+    expect(parser.match(list_nl_eof_token)).to eq_list_node(
+      Md2Html::Parser::ListNode.new(
+        sentences: Md2Html::Parser::Node.new(type: 'LIST_ITEM', value: ' foo', consumed: 3),
+        consumed: 4)
+    )
+
+    list_nl_nl_eof_token = Md2Html::Tokenizer::tokenize("- foo\n\n")
+    expect(parser.match(list_nl_nl_eof_token)).to eq_list_node(
+      Md2Html::Parser::ListNode.new(
+        sentences: Md2Html::Parser::Node.new(type: 'LIST_ITEM', value: ' foo', consumed: 3),
+        consumed: 5)
+    )
+
+    list_nl_list_nl_eof_token = Md2Html::Tokenizer::tokenize("- foo\n- bar\n")
+    expect(parser.match(list_nl_list_nl_eof_token)).to eq_list_node(
+      Md2Html::Parser::ListNode.new(
+        sentences: [
+          Md2Html::Parser::Node.new(type: 'LIST_ITEM', value: ' foo', consumed: 3),
+          Md2Html::Parser::Node.new(type: 'LIST_ITEM', value: ' bar', consumed: 3)
+        ],
+        consumed: 8)
+    )
+  end
+
   it "makes node from markdown content" do
     tokens = Md2Html::Tokenizer::tokenize("__Foo__ and *text*.\nAnother para.")
     body_node = Md2Html::Parser::parse(tokens)
