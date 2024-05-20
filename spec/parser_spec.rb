@@ -75,7 +75,7 @@ describe Md2Html::Parser do
 
   it "list_items_and_eof_parser parse list items of the same level" do
     tokens = Md2Html::Tokenizer::tokenize("- foo\n- bar\n- baz\n")
-    parser = Md2Html::Parser::ParserFactory.build(:list_items_and_eof_parser)
+    parser = Md2Html::Parser::ParserFactory.build(:list_items_parser)
     nodes = parser.match(tokens)
     expect(nodes.consumed).to eq 10 #(dash text newline) * 3 + eof
   end
