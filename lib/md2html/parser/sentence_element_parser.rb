@@ -5,7 +5,7 @@ require_relative '../util/logger_factory'
 
 module Md2Html
   module Parser
-    class SentenceParser < BaseParser
+    class SentenceElementParser < BaseParser
       include MatchesFirst
 
       def initialize

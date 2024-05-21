@@ -15,7 +15,7 @@ module Md2Html
       end
 
       def match(tokens)
-        nodes, consumed = match_star tokens, with: sentence_parser
+        nodes, consumed = match_star tokens, with: sentence_element_parser
         return Node.null if nodes.empty?
         if tokens.peek_at(consumed, 'NEWLINE', 'NEWLINE')
           consumed += 2 # consume newlines

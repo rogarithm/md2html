@@ -17,7 +17,7 @@ module Md2Html
       def match(tokens)
         make_log_msg_before(@logger)
 
-        nodes, consumed = match_star tokens, with: sentence_parser
+        nodes, consumed = match_star tokens, with: sentence_element_parser
         return Node.null if nodes.empty?
 
         if tokens.peek_at(consumed, 'NEWLINE', 'NEWLINE', 'EOF')
