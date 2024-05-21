@@ -64,10 +64,57 @@ describe Md2Html::Parser, "parsesr" do
     )
   end
 
-  it "makes node from markdown content" do
-    tokens = Md2Html::Tokenizer::tokenize("__Foo__ and *text*.\nAnother para.")
-    body_node = Md2Html::Parser::parse(tokens)
-    expect(body_node.consumed).to eq 13
+  it "can parse one sentence without eof in mind" do
+    parser = Md2Html::Parser::ParserFactory.build(:sentences_and_newline_parser)
+
+    nl_token = Md2Html::Tokenizer::tokenize("__Foo__ and *text*.\n")
+    paragraph_node = parser.match(nl_token)
+    expect(paragraph_node).to eq_paragraph_node Md2Html::Parser::ParagraphNode.new(sentences: [
+    Md2Html::Parser::Node.new(type: 'BOLD', value: 'Foo', consumed: 5),
+    Md2Html::Parser::Node.new(type: 'TEXT', value: ' and ', consumed: 1),
+    Md2Html::Parser::Node.new(type: 'EMPHASIS', value: 'text', consumed: 3),
+    Md2Html::Parser::Node.new(type: 'TEXT', value: '.', consumed: 1)
+    ], consumed: 11)
+
+    nl_nl_token = Md2Html::Tokenizer::tokenize("__Foo__ and *text*.\n\n")
+    paragraph_node = parser.match(nl_nl_token)
+    expect(paragraph_node).to eq_paragraph_node Md2Html::Parser::ParagraphNode.new(sentences: [
+    Md2Html::Parser::Node.new(type: 'BOLD', value: 'Foo', consumed: 5),
+    Md2Html::Parser::Node.new(type: 'TEXT', value: ' and ', consumed: 1),
+    Md2Html::Parser::Node.new(type: 'EMPHASIS', value: 'text', consumed: 3),
+    Md2Html::Parser::Node.new(type: 'TEXT', value: '.', consumed: 1)
+    ], consumed: 12)
+  end
+
+  it "can parse one sentence with eof in mind" do
+    parser = Md2Html::Parser::ParserFactory.build(:sentences_and_eof_parser)
+
+    token_no_nl = Md2Html::Tokenizer::tokenize("__Foo__ and *text*.")
+    paragraph_node = parser.match(token_no_nl)
+    expect(paragraph_node).to eq_paragraph_node Md2Html::Parser::ParagraphNode.new(sentences: [
+    Md2Html::Parser::Node.new(type: 'BOLD', value: 'Foo', consumed: 5),
+    Md2Html::Parser::Node.new(type: 'TEXT', value: ' and ', consumed: 1),
+    Md2Html::Parser::Node.new(type: 'EMPHASIS', value: 'text', consumed: 3),
+    Md2Html::Parser::Node.new(type: 'TEXT', value: '.', consumed: 1)
+    ], consumed: 11)
+
+    token_nl = Md2Html::Tokenizer::tokenize("__Foo__ and *text*.\n")
+    paragraph_node = parser.match(token_nl)
+    expect(paragraph_node).to eq_paragraph_node Md2Html::Parser::ParagraphNode.new(sentences: [
+    Md2Html::Parser::Node.new(type: 'BOLD', value: 'Foo', consumed: 5),
+    Md2Html::Parser::Node.new(type: 'TEXT', value: ' and ', consumed: 1),
+    Md2Html::Parser::Node.new(type: 'EMPHASIS', value: 'text', consumed: 3),
+    Md2Html::Parser::Node.new(type: 'TEXT', value: '.', consumed: 1)
+    ], consumed: 12)
+
+    token_nl_nl = Md2Html::Tokenizer::tokenize("__Foo__ and *text*.\n\n")
+    paragraph_node = parser.match(token_nl_nl)
+    expect(paragraph_node).to eq_paragraph_node Md2Html::Parser::ParagraphNode.new(sentences: [
+    Md2Html::Parser::Node.new(type: 'BOLD', value: 'Foo', consumed: 5),
+    Md2Html::Parser::Node.new(type: 'TEXT', value: ' and ', consumed: 1),
+    Md2Html::Parser::Node.new(type: 'EMPHASIS', value: 'text', consumed: 3),
+    Md2Html::Parser::Node.new(type: 'TEXT', value: '.', consumed: 1)
+    ], consumed: 13)
   end
 
   it "parse text that has dash character" do
