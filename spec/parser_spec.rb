@@ -71,7 +71,7 @@ describe Md2Html::Parser, "parser" do
   end
 
   it "can parse one sentence without eof in mind" do
-    parser = Md2Html::Parser::ParserFactory.build(:sentences_and_newline_parser)
+    parser = Md2Html::Parser::ParserFactory.build(:sentence_parser)
     expected_sentence = [
       Md2Html::Parser::Node.new(type: 'BOLD', value: 'Foo', consumed: 5),
       Md2Html::Parser::Node.new(type: 'TEXT', value: ' and ', consumed: 1),
@@ -81,15 +81,15 @@ describe Md2Html::Parser, "parser" do
 
     nl_token = Md2Html::Tokenizer::tokenize("__Foo__ and *text*.\n")
     paragraph_node = parser.match(nl_token)
-    expect(paragraph_node).to eq_paragraph_node Md2Html::Parser::ParagraphNode.new(sentences: expected_sentence, consumed: 11)
+    expect(paragraph_node).to eq_paragraph_node Md2Html::Parser::ParagraphNode.new(sentences: expected_sentence, consumed: 12)
 
     nl_nl_token = Md2Html::Tokenizer::tokenize("__Foo__ and *text*.\n\n")
     paragraph_node = parser.match(nl_nl_token)
-    expect(paragraph_node).to eq_paragraph_node Md2Html::Parser::ParagraphNode.new(sentences: expected_sentence, consumed: 12)
+    expect(paragraph_node).to eq_paragraph_node Md2Html::Parser::ParagraphNode.new(sentences: expected_sentence, consumed: 13)
   end
 
   it "can parse one sentence with eof in mind" do
-    parser = Md2Html::Parser::ParserFactory.build(:sentences_and_eof_parser)
+    parser = Md2Html::Parser::ParserFactory.build(:sentence_parser)
     expected_sentence = [
       Md2Html::Parser::Node.new(type: 'BOLD', value: 'Foo', consumed: 5),
       Md2Html::Parser::Node.new(type: 'TEXT', value: ' and ', consumed: 1),
