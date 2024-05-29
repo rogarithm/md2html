@@ -1,4 +1,5 @@
 require_relative '../lib/md2html/parser'
+require_relative '../lib/md2html/tokenizer'
 Dir.glob('./lib/md2html/parser/*.rb').each do |file|
   require file
 end
