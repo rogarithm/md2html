@@ -6,7 +6,12 @@ end
 require 'pry'
 require_relative './helpers/spec_helper'
 
-describe Md2Html::Parser, "parsesr" do
+RSpec.configure do |config|
+  config.filter_run_when_matching(focus: true)
+  config.example_status_persistence_file_path = 'spec/pass_fail_history'
+end
+
+describe Md2Html::Parser, "parser" do
 
   it "can parse tokens that has bold tag" do
     parser = Md2Html::Parser::ParserFactory.build(:inline_parser)
@@ -67,49 +72,44 @@ describe Md2Html::Parser, "parsesr" do
 
   it "can parse one sentence without eof in mind" do
     parser = Md2Html::Parser::ParserFactory.build(:sentences_and_newline_parser)
+    expected_sentence = [
+      Md2Html::Parser::Node.new(type: 'BOLD', value: 'Foo', consumed: 5),
+      Md2Html::Parser::Node.new(type: 'TEXT', value: ' and ', consumed: 1),
+      Md2Html::Parser::Node.new(type: 'EMPHASIS', value: 'text', consumed: 3),
+      Md2Html::Parser::Node.new(type: 'TEXT', value: '.', consumed: 1)
+    ]
 
     nl_token = Md2Html::Tokenizer::tokenize("__Foo__ and *text*.\n")
     paragraph_node = parser.match(nl_token)
-    expect(paragraph_node).to eq_paragraph_node Md2Html::Parser::ParagraphNode.new(sentences: [
-    Md2Html::Parser::Node.new(type: 'BOLD', value: 'Foo', consumed: 5),
-    Md2Html::Parser::Node.new(type: 'TEXT', value: ' and ', consumed: 1),
-    Md2Html::Parser::Node.new(type: 'EMPHASIS', value: 'text', consumed: 3),
-    Md2Html::Parser::Node.new(type: 'TEXT', value: '.', consumed: 1)
-    ], consumed: 11)
+    expect(paragraph_node).to eq_paragraph_node Md2Html::Parser::ParagraphNode.new(sentences: expected_sentence, consumed: 11)
 
     nl_nl_token = Md2Html::Tokenizer::tokenize("__Foo__ and *text*.\n\n")
     paragraph_node = parser.match(nl_nl_token)
-    expect(paragraph_node).to eq_paragraph_node Md2Html::Parser::ParagraphNode.new(sentences: [
-    Md2Html::Parser::Node.new(type: 'BOLD', value: 'Foo', consumed: 5),
-    Md2Html::Parser::Node.new(type: 'TEXT', value: ' and ', consumed: 1),
-    Md2Html::Parser::Node.new(type: 'EMPHASIS', value: 'text', consumed: 3),
-    Md2Html::Parser::Node.new(type: 'TEXT', value: '.', consumed: 1)
-    ], consumed: 12)
+    expect(paragraph_node).to eq_paragraph_node Md2Html::Parser::ParagraphNode.new(sentences: expected_sentence, consumed: 12)
   end
 
   it "can parse one sentence with eof in mind" do
     parser = Md2Html::Parser::ParserFactory.build(:sentences_and_eof_parser)
+    expected_sentence = [
+      Md2Html::Parser::Node.new(type: 'BOLD', value: 'Foo', consumed: 5),
+      Md2Html::Parser::Node.new(type: 'TEXT', value: ' and ', consumed: 1),
+      Md2Html::Parser::Node.new(type: 'EMPHASIS', value: 'text', consumed: 3),
+      Md2Html::Parser::Node.new(type: 'TEXT', value: '.', consumed: 1)
+    ]
 
     token_no_nl = Md2Html::Tokenizer::tokenize("__Foo__ and *text*.")
     paragraph_node = parser.match(token_no_nl)
-    expect(paragraph_node).to eq_paragraph_node Md2Html::Parser::ParagraphNode.new(sentences: [
-    Md2Html::Parser::Node.new(type: 'BOLD', value: 'Foo', consumed: 5),
-    Md2Html::Parser::Node.new(type: 'TEXT', value: ' and ', consumed: 1),
-    Md2Html::Parser::Node.new(type: 'EMPHASIS', value: 'text', consumed: 3),
-    Md2Html::Parser::Node.new(type: 'TEXT', value: '.', consumed: 1)
-    ], consumed: 11)
+    expect(paragraph_node).to eq_paragraph_node Md2Html::Parser::ParagraphNode.new(sentences: expected_sentence, consumed: 11)
 
     token_nl = Md2Html::Tokenizer::tokenize("__Foo__ and *text*.\n")
     paragraph_node = parser.match(token_nl)
-    expect(paragraph_node).to eq_paragraph_node Md2Html::Parser::ParagraphNode.new(sentences: [
-    Md2Html::Parser::Node.new(type: 'BOLD', value: 'Foo', consumed: 5),
-    Md2Html::Parser::Node.new(type: 'TEXT', value: ' and ', consumed: 1),
-    Md2Html::Parser::Node.new(type: 'EMPHASIS', value: 'text', consumed: 3),
-    Md2Html::Parser::Node.new(type: 'TEXT', value: '.', consumed: 1)
-    ], consumed: 12)
+    expect(paragraph_node).to eq_paragraph_node Md2Html::Parser::ParagraphNode.new(sentences: expected_sentence, consumed: 12)
 
     token_nl_nl = Md2Html::Tokenizer::tokenize("__Foo__ and *text*.\n\n")
     paragraph_node = parser.match(token_nl_nl)
+    expect(paragraph_node).to eq_paragraph_node Md2Html::Parser::ParagraphNode.new(sentences: expected_sentence, consumed: 13)
+  end
+
     expect(paragraph_node).to eq_paragraph_node Md2Html::Parser::ParagraphNode.new(sentences: [
     Md2Html::Parser::Node.new(type: 'BOLD', value: 'Foo', consumed: 5),
     Md2Html::Parser::Node.new(type: 'TEXT', value: ' and ', consumed: 1),
