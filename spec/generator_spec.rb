@@ -1,3 +1,5 @@
+require_relative '../lib/md2html/tokenizer'
+require_relative '../lib/md2html/parser'
 require_relative '../lib/md2html/generator'
 Dir.glob('./lib/md2html/generator/*.rb').each do |file|
   require file

@@ -1,3 +1,4 @@
+require_relative '../lib/md2html/tokenizer'
 require_relative '../lib/md2html/parser/parser_factory'
 require 'pry'
 
