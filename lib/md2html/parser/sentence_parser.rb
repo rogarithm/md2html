@@ -1,7 +1,7 @@
 require_relative "base_parser"
 require_relative "matches_star"
 require_relative "node"
-require_relative "paragraph_node"
+require_relative "sentence_node"
 
 module Md2Html
   module Parser
@@ -25,7 +25,7 @@ module Md2Html
           consumed += 1
         end
 
-        ParagraphNode.new(sentences: nodes, consumed: consumed)
+        SentenceNode.new(words: nodes, consumed: consumed)
       end
     end
   end

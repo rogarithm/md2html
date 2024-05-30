@@ -68,10 +68,10 @@ RSpec.configure do |config|
     end
   end
 
-  RSpec::Matchers.define :eq_paragraph_node do |expected_node|
+  RSpec::Matchers.define :eq_sentence_node do |expected_node|
     match do |actual_node|
-      actual_node.sentences.each.with_index do |sentence, index|
-        sentence.to.eq_node expected_node.sentences[index]
+      actual_node.words.each.with_index do |word, index|
+        word.to.eq_node expected_node.words[index]
       end
     end
     match do |actual_node|
@@ -80,7 +80,7 @@ RSpec.configure do |config|
     failure_message do |actual_node|
       "expected that #{actual_node} would have all the attributes the same as #{expected_node}. Attributes:\n
       ACTUAL | EXPECTED\n
-      #{actual_node.sentences} | #{expected_node.sentences}\n
+      #{actual_node.words} | #{expected_node.words}\n
       #{actual_node.consumed} | #{expected_node.consumed}\n"
     end
   end
