@@ -8,6 +8,17 @@ module Md2Html
         @type = 'PARAGRAPH'
       end
 
+      def to_s
+        if self.sentences.size < 1
+          return 'EMPTY PARAGRAPH'
+        end
+        result = "#{self.type}:#{self.consumed}\n"
+        self.sentences.each do |sentence|
+          result += "  #{sentence.to_s}\n"
+        end
+        result
+      end
+
       def present?
         true
       end
