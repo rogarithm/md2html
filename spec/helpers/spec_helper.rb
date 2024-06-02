@@ -38,12 +38,12 @@ RSpec.configure do |config|
     max_length = max_length_attr.length
 
     "ACTUAL | EXPECTED\n
-#{print_attr_n_computed_space(actual_node.type, max_length)} | #{expected_node.type}\n
-#{print_attr_n_computed_space(actual_node.value, max_length)} | #{expected_node.value}\n
-#{print_attr_n_computed_space(actual_node.consumed.to_s, max_length)} | #{expected_node.consumed}\n"
+#{right_align_attr(actual_node.type, max_length)} | #{expected_node.type}\n
+#{right_align_attr(actual_node.value, max_length)} | #{expected_node.value}\n
+#{right_align_attr(actual_node.consumed.to_s, max_length)} | #{expected_node.consumed}\n"
   end
 
-  def print_attr_n_computed_space attr, max_length
+  def right_align_attr attr, max_length
     "#{' ' * (max_length - attr.length)}#{attr}"
   end
 
