@@ -20,6 +20,7 @@ module Md2Html
         when tokens.peek_at(consumed, 'NEWLINE', 'EOF') == true
           consumed += 2
         when tokens.peek_at(consumed, 'NEWLINE') == true
+          nodes << Node.new(type: 'NEWLINE', value: '\n', consumed: 1)
           consumed += 1
         when tokens.peek_at(consumed, 'EOF') == true
           consumed += 1

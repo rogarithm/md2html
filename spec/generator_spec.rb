@@ -13,12 +13,20 @@ describe Md2Html::Generator do
     Md2Html::Generator::generate(ast)
   end
 
+  it "generates html from one sentence" do
+    tokens = Md2Html::Tokenizer::tokenize("__Foo__ and *text*.")
+
+    parser = Md2Html::Parser::SentenceParser.new
+    node = parser.match(tokens)
+    puts node
+
+    generator = Md2Html::Generator::SentenceVisitor.new
+    expect(generator.visit(node)).to eq "<strong>Foo</strong> and <em>text</em>."
+  end
+
   it "generates html from paragraph" do
     expect(generate("__Foo__ and *text*.\nAnother para.")).to eq "<p>
-  <strong>Foo</strong> and <em>text</em>.
-</p>
-<p>
-  Another para.
+  <strong>Foo</strong> and <em>text</em>.<br>Another para.
 </p>\n"
   end
 
