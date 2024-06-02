@@ -141,49 +141,6 @@ describe Md2Html::Parser, "parser" do
         consumed: 22
       )
     end
-
-    it "flats sentence nodes into plain nodes" do
-      raw = Md2Html::Parser::ParagraphNode.new(
-        sentences: [
-          Md2Html::Parser::SentenceNode.new(words: [
-            Md2Html::Parser::Node.new(type: 'BOLD', value: 'Foo', consumed: 5),
-            Md2Html::Parser::Node.new(type: 'TEXT', value: ' and ', consumed: 1),
-            Md2Html::Parser::Node.new(type: 'EMPHASIS', value: 'text', consumed: 3),
-            Md2Html::Parser::Node.new(type: 'TEXT', value: '.', consumed: 1)
-          ], consumed: 11),
-          Md2Html::Parser::SentenceNode.new(words: [
-            Md2Html::Parser::Node.new(type: 'BOLD', value: 'Foo', consumed: 5),
-            Md2Html::Parser::Node.new(type: 'TEXT', value: ' and ', consumed: 1),
-            Md2Html::Parser::Node.new(type: 'EMPHASIS', value: 'text', consumed: 3),
-            Md2Html::Parser::Node.new(type: 'TEXT', value: '.', consumed: 1)
-          ], consumed: 11)
-        ],
-        consumed: 22)
-      new_sentences = []
-      raw.sentences.each do |sentence|
-        new_sentences << sentence.words
-      end
-      new_sentences.flatten!
-      new_node = Md2Html::Parser::ParagraphNode.new(
-        sentences: new_sentences,
-        consumed: raw.consumed
-      )
-
-      expected = Md2Html::Parser::ParagraphNode.new(
-        sentences: [
-          Md2Html::Parser::Node.new(type: 'BOLD', value: 'Foo', consumed: 5),
-          Md2Html::Parser::Node.new(type: 'TEXT', value: ' and ', consumed: 1),
-          Md2Html::Parser::Node.new(type: 'EMPHASIS', value: 'text', consumed: 3),
-          Md2Html::Parser::Node.new(type: 'TEXT', value: '.', consumed: 1),
-          Md2Html::Parser::Node.new(type: 'BOLD', value: 'Foo', consumed: 5),
-          Md2Html::Parser::Node.new(type: 'TEXT', value: ' and ', consumed: 1),
-          Md2Html::Parser::Node.new(type: 'EMPHASIS', value: 'text', consumed: 3),
-          Md2Html::Parser::Node.new(type: 'TEXT', value: '.', consumed: 1)
-        ],
-        consumed: 22
-      )
-      expect(new_node).to eq_paragraph_node(expected)
-    end
   end
 
   it "block parser parse text that has dash character" do
