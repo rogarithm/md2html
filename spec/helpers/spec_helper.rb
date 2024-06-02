@@ -32,6 +32,21 @@ RSpec.configure do |config|
     expectations.include_chain_clauses_in_custom_matcher_descriptions = true
   end
 
+  def match_space node, expected_node
+    a= %W(ACTUAL #{node.type} #{node.value} #{node.consumed.to_s})
+    max_length_attr = a.max {|a,b| a.length <=> b.length }
+    max_length = max_length_attr.length
+
+    "ACTUAL | EXPECTED\n
+#{print_attr_n_computed_space(node.type, max_length)} | #{expected_node.type}\n
+#{print_attr_n_computed_space(node.value, max_length)} | #{expected_node.value}\n
+#{print_attr_n_computed_space(node.consumed.to_s, max_length)} | #{expected_node.consumed}\n"
+  end
+
+  def print_attr_n_computed_space attr, max_length
+    "#{' ' * (max_length - attr.length)}#{attr}"
+  end
+
   RSpec::Matchers.define :eq_node do |expected_node|
     match do |actual_node|
       actual_node.type == expected_node.type &&
@@ -39,11 +54,9 @@ RSpec.configure do |config|
         actual_node.consumed == expected_node.consumed
     end
     failure_message do |actual_node|
-      "expected that #{actual_node} would have all the attributes the same as #{expected_node}. Attributes:\n
-      ACTUAL | EXPECTED\n
-      #{actual_node.type} | #{expected_node.type}\n
-      #{actual_node.value} | #{expected_node.value}\n
-      #{actual_node.consumed} | #{expected_node.consumed}\n"
+      "Expected that actual_node would have all the attributes the same as expected_node.\n
+Attributes:\n
+#{match_space actual_node, expected_node}\n"
     end
   end
 
