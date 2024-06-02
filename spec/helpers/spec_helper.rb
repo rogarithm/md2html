@@ -36,16 +36,35 @@ RSpec.configure do |config|
     "#{left}#{' ' * (max_length - left.length)} | #{right}\n"
   end
 
-  def collect_node_info actual_node, expected_node
+  def collect_node_info actual_node, expected_node, is_inner
     left_attr_names = actual_node.instance_variables.inject([]) {|result, attr_name| result << attr_name.to_s.sub(/@/,'')}
     right_attr_names = expected_node.instance_variables.inject([]) {|result, attr_name| result << attr_name.to_s.sub(/@/,'')}
 
-    node_info = [["ACTUAL", "EXPECTED"]]
+    node_info =  [["ACTUAL", "EXPECTED"]]
+    if is_inner == true
+      node_info = []
+    end
+
 
     left_attr_names.each do |attr_name|
       current_attr = attr_name.to_sym
 
-      node_info << [actual_node.send(current_attr).to_s, expected_node.send(current_attr).to_s]
+      if current_attr == :sentences
+        actual_inner_node = actual_node.send(current_attr)[0]
+        expected_inner_node = expected_node.send(current_attr)[0]
+
+        collect_node_info(actual_inner_node, expected_inner_node, true).each do |left_and_right|
+          node_info << left_and_right
+        end
+      else
+        left = actual_node.send(current_attr).to_s
+        right = expected_node.send(current_attr).to_s
+        if is_inner == true
+          left = " " + left
+          right = " " + right
+        end
+        node_info << [left, right]
+      end
     end
 
     node_info
@@ -69,7 +88,7 @@ RSpec.configure do |config|
   def generate_node_info_msg actual_node, expected_node
     result = "Expected that actual node would have all the attributes the same as expected node.\n
 Attributes:\n\n"
-    info_obj = collect_node_info actual_node, expected_node
+    info_obj = collect_node_info actual_node, expected_node, false
     result += generate_node_info_msg_body info_obj
     result
   end
