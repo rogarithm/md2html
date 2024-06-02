@@ -4,10 +4,7 @@ require 'pry'
 describe Md2Html do
   it "generates html from paragraph" do
     expect(Md2Html::make_html("__Foo__ and *text*.\nAnother para.")).to eq "<p>
-  <strong>Foo</strong> and <em>text</em>.
-</p>
-<p>
-  Another para.
+  <strong>Foo</strong> and <em>text</em>.<br>Another para.
 </p>\n"
   end
 
