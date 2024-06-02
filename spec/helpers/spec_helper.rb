@@ -32,6 +32,10 @@ RSpec.configure do |config|
     expectations.include_chain_clauses_in_custom_matcher_descriptions = true
   end
 
+  def center_align_attr_info_msg left, right, max_length
+    "#{' ' * (max_length - left.length)}#{left} | #{right}\n"
+  end
+
   def align_node_info_msg actual_node, expected_node
     lefts = ["ACTUAL", actual_node.type, actual_node.value, actual_node.consumed.to_s]
     rights = ["EXPECTED", expected_node.type, expected_node.value, expected_node.consumed.to_s]
@@ -44,10 +48,6 @@ RSpec.configure do |config|
       result += "#{center_align_attr_info_msg(left, rights[index], max_length)}"
     end
     result
-  end
-
-  def center_align_attr_info_msg left, right, max_length
-    "#{' ' * (max_length - left.length)}#{left} | #{right}\n"
   end
 
   RSpec::Matchers.define :eq_node do |expected_node|
