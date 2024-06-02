@@ -33,7 +33,7 @@ RSpec.configure do |config|
   end
 
   def center_align_attr_info_msg left, right, max_length
-    "#{' ' * (max_length - left.length)}#{left} | #{right}\n"
+    "#{left}#{' ' * (max_length - left.length)} | #{right}\n"
   end
 
   def align_node_info_msg actual_node, expected_node
