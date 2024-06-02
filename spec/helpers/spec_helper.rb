@@ -40,29 +40,29 @@ RSpec.configure do |config|
     left_attr_names = actual_node.instance_variables.inject([]) {|result, attr_name| result << attr_name.to_s.sub(/@/,'')}
     right_attr_names = expected_node.instance_variables.inject([]) {|result, attr_name| result << attr_name.to_s.sub(/@/,'')}
 
-    node_info = [["ACTUAL"], ["EXPECTED"]]
+    node_info = [["ACTUAL", "EXPECTED"]]
 
     left_attr_names.each do |attr_name|
       current_attr = attr_name.to_sym
 
-      node_info[0] << actual_node.send(current_attr).to_s
-      node_info[1] << expected_node.send(current_attr).to_s
+      node_info << [actual_node.send(current_attr).to_s, expected_node.send(current_attr).to_s]
     end
 
-    longest_attr = node_info[0].max { |a,b| a.length <=> b.length }
-    max_length = longest_attr.length
+    longest_attr_pair = node_info.max { |a,b| a[0].length <=> b[0].length }
+    max_length = longest_attr_pair[0].length
 
     [node_info, max_length]
   end
 
   def generate_node_info_msg_body info_obj
-    lefts = info_obj[0][0]
-    rights = info_obj[0][1]
+    lefts_and_rights = info_obj[0]
     max_length = info_obj[1]
 
     result = ""
-    lefts.each.with_index do |left, index|
-      result += "#{center_align_attr_info_msg(left, rights[index], max_length)}"
+    lefts_and_rights.each do |left_and_right|
+      left = left_and_right[0]
+      right = left_and_right[1]
+      result += "#{center_align_attr_info_msg(left, right, max_length)}"
     end
     result
   end
