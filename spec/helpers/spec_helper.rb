@@ -80,11 +80,10 @@ Attributes:\n\n"
       end
     end
     match do |actual_node|
+      actual_node.type == expected_node.type &&
       actual_node.consumed == expected_node.consumed
     end
-    match do |actual_node|
-      actual_node.type == expected_node.type
-    end
+
     failure_message do |actual_node|
       "expected that #{actual_node} would have all the attributes the same as #{expected_node}. Attributes:\n
       ACTUAL | EXPECTED\n
