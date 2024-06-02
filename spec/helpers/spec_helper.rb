@@ -44,12 +44,22 @@ RSpec.configure do |config|
     rights = ["EXPECTED"]
 
     left_attr_names.each do |attr_name|
-      lefts << actual_node.send(attr_name.to_sym).to_s
-      rights << expected_node.send(attr_name.to_sym).to_s
+      current_attr = attr_name.to_sym
+
+      lefts << actual_node.send(current_attr).to_s
+      rights << expected_node.send(current_attr).to_s
     end
 
     longest_attr = lefts.max { |a,b| a.length <=> b.length }
     max_length = longest_attr.length
+
+    [lefts, rights, max_length]
+  end
+
+  def generate_node_info info_obj
+    lefts = info_obj[0]
+    rights = info_obj[1]
+    max_length = info_obj[2]
 
     result = ""
     lefts.each.with_index do |left, index|
@@ -61,7 +71,8 @@ RSpec.configure do |config|
   def generate_node_info_msg actual_node, expected_node
     result = "Expected that actual node would have all the attributes the same as expected node.\n
 Attributes:\n\n"
-    result += align_node_info_msg actual_node, expected_node
+    info_obj = align_node_info_msg actual_node, expected_node
+    result += generate_node_info info_obj
     result
   end
 
