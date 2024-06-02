@@ -32,15 +32,15 @@ RSpec.configure do |config|
     expectations.include_chain_clauses_in_custom_matcher_descriptions = true
   end
 
-  def match_space node, expected_node
-    a= %W(ACTUAL #{node.type} #{node.value} #{node.consumed.to_s})
+  def match_space actual_node, expected_node
+    a= %W(ACTUAL #{actual_node.type} #{actual_node.value} #{actual_node.consumed.to_s})
     max_length_attr = a.max {|a,b| a.length <=> b.length }
     max_length = max_length_attr.length
 
     "ACTUAL | EXPECTED\n
-#{print_attr_n_computed_space(node.type, max_length)} | #{expected_node.type}\n
-#{print_attr_n_computed_space(node.value, max_length)} | #{expected_node.value}\n
-#{print_attr_n_computed_space(node.consumed.to_s, max_length)} | #{expected_node.consumed}\n"
+#{print_attr_n_computed_space(actual_node.type, max_length)} | #{expected_node.type}\n
+#{print_attr_n_computed_space(actual_node.value, max_length)} | #{expected_node.value}\n
+#{print_attr_n_computed_space(actual_node.consumed.to_s, max_length)} | #{expected_node.consumed}\n"
   end
 
   def print_attr_n_computed_space attr, max_length
