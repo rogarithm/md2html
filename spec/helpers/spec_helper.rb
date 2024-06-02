@@ -43,7 +43,8 @@ RSpec.configure do |config|
     longest_attr = lefts.max { |a,b| a.length <=> b.length }
     max_length = longest_attr.length
 
-    result = ''
+    result = "Expected that actual node would have all the attributes the same as expected node.\n
+Attributes:\n\n"
     lefts.each.with_index do |left, index|
       result += "#{center_align_attr_info_msg(left, rights[index], max_length)}"
     end
@@ -57,9 +58,7 @@ RSpec.configure do |config|
         actual_node.consumed == expected_node.consumed
     end
     failure_message do |actual_node|
-      "Expected that actual_node would have all the attributes the same as expected_node.\n
-Attributes:\n
-#{align_node_info_msg actual_node, expected_node}\n"
+      "#{align_node_info_msg actual_node, expected_node}\n"
     end
   end
 
