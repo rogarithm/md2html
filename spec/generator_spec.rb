@@ -5,6 +5,12 @@ Dir.glob('./lib/md2html/generator/*.rb').each do |file|
   require file
 end
 require 'pry'
+require_relative './helpers/spec_helper'
+
+RSpec.configure do |config|
+  config.filter_run_when_matching(focus: true)
+  config.example_status_persistence_file_path = 'spec/pass_fail_history'
+end
 
 describe Md2Html::Generator do
   def generate(markdown)

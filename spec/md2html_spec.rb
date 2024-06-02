@@ -1,5 +1,11 @@
 require 'md2html'
 require 'pry'
+require_relative './helpers/spec_helper'
+
+RSpec.configure do |config|
+  config.filter_run_when_matching(focus: true)
+  config.example_status_persistence_file_path = 'spec/pass_fail_history'
+end
 
 describe Md2Html do
   it "generates html from paragraph" do
