@@ -48,15 +48,14 @@ RSpec.configure do |config|
       node_info << [actual_node.send(current_attr).to_s, expected_node.send(current_attr).to_s]
     end
 
-    longest_attr_pair = node_info.max { |a,b| a[0].length <=> b[0].length }
-    max_length = longest_attr_pair[0].length
-
-    [node_info, max_length]
+    node_info
   end
 
   def generate_node_info_msg_body info_obj
-    lefts_and_rights = info_obj[0]
-    max_length = info_obj[1]
+    lefts_and_rights = info_obj
+
+    longest_attr_pair = lefts_and_rights.max { |a,b| a[0].length <=> b[0].length }
+    max_length = longest_attr_pair[0].length
 
     result = ""
     lefts_and_rights.each do |left_and_right|
