@@ -37,8 +37,19 @@ RSpec.configure do |config|
   end
 
   def align_node_info_msg actual_node, expected_node
-    lefts = ["ACTUAL", actual_node.type, actual_node.value, actual_node.consumed.to_s]
-    rights = ["EXPECTED", expected_node.type, expected_node.value, expected_node.consumed.to_s]
+    left_attr_names = actual_node.instance_variables.inject([]) {|result, attr_name| result << attr_name.to_s.sub(/@/,'')}
+
+    lefts = ["ACTUAL"]
+    left_attr_names.each do |attr_name|
+      lefts << actual_node.send(attr_name.to_sym).to_s
+    end
+
+    right_attr_names = expected_node.instance_variables.inject([]) {|result, attr_name| result << attr_name.to_s.sub(/@/,'')}
+
+    rights = ["EXPECTED"]
+    right_attr_names.each do |attr_name|
+      rights << expected_node.send(attr_name.to_sym).to_s
+    end
 
     longest_attr = lefts.max { |a,b| a.length <=> b.length }
     max_length = longest_attr.length
