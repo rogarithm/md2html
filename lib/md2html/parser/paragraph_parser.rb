@@ -1,13 +1,20 @@
 require_relative "base_parser"
-require_relative "matches_first"
+require_relative "matches_plus"
+require_relative "sentence_parser"
+require_relative "paragraph_node"
 
 module Md2Html
   module Parser
     class ParagraphParser < BaseParser
-      include MatchesFirst
+      include MatchesPlus
 
       def match(tokens)
-        match_first tokens, sentence_parser
+        sentences, consumed = match_plus tokens, with: sentence_parser
+        if sentences.size == 0
+          return Node.null
+        end
+
+        ParagraphNode.new(sentences: sentences, consumed: consumed)
       end
     end
   end
