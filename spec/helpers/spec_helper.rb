@@ -38,16 +38,13 @@ RSpec.configure do |config|
 
   def align_node_info_msg actual_node, expected_node
     left_attr_names = actual_node.instance_variables.inject([]) {|result, attr_name| result << attr_name.to_s.sub(/@/,'')}
-
-    lefts = ["ACTUAL"]
-    left_attr_names.each do |attr_name|
-      lefts << actual_node.send(attr_name.to_sym).to_s
-    end
-
     right_attr_names = expected_node.instance_variables.inject([]) {|result, attr_name| result << attr_name.to_s.sub(/@/,'')}
 
+    lefts = ["ACTUAL"]
     rights = ["EXPECTED"]
-    right_attr_names.each do |attr_name|
+
+    left_attr_names.each do |attr_name|
+      lefts << actual_node.send(attr_name.to_sym).to_s
       rights << expected_node.send(attr_name.to_sym).to_s
     end
 
