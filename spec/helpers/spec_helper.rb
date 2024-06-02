@@ -36,7 +36,7 @@ RSpec.configure do |config|
     "#{left}#{' ' * (max_length - left.length)} | #{right}\n"
   end
 
-  def align_node_info_msg actual_node, expected_node
+  def collect_node_info actual_node, expected_node
     left_attr_names = actual_node.instance_variables.inject([]) {|result, attr_name| result << attr_name.to_s.sub(/@/,'')}
     right_attr_names = expected_node.instance_variables.inject([]) {|result, attr_name| result << attr_name.to_s.sub(/@/,'')}
 
@@ -56,7 +56,7 @@ RSpec.configure do |config|
     [lefts, rights, max_length]
   end
 
-  def generate_node_info info_obj
+  def generate_node_info_msg_body info_obj
     lefts = info_obj[0]
     rights = info_obj[1]
     max_length = info_obj[2]
@@ -71,8 +71,8 @@ RSpec.configure do |config|
   def generate_node_info_msg actual_node, expected_node
     result = "Expected that actual node would have all the attributes the same as expected node.\n
 Attributes:\n\n"
-    info_obj = align_node_info_msg actual_node, expected_node
-    result += generate_node_info info_obj
+    info_obj = collect_node_info actual_node, expected_node
+    result += generate_node_info_msg_body info_obj
     result
   end
 
