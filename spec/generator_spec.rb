@@ -18,7 +18,6 @@ describe Md2Html::Generator do
 
     parser = Md2Html::Parser::SentenceParser.new
     node = parser.match(tokens)
-    puts node
 
     generator = Md2Html::Generator::SentenceVisitor.new
     expect(generator.visit(node)).to eq "<strong>Foo</strong> and <em>text</em>."
