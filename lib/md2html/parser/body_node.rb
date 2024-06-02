@@ -7,6 +7,12 @@ module Md2Html
         @consumed  = consumed
       end
 
+      def to_s
+        self.blocks.each do |block|
+          block.to_s
+        end.join("\n")
+      end
+
       def present?
         true
       end
