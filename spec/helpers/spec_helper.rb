@@ -103,6 +103,31 @@ RSpec.configure do |config|
     end
   end
 
+  RSpec::Matchers.define :eq_body_node do |expected_node|
+    match do |actual_node|
+      actual_node.blocks.each.with_index do |block, index|
+        if block.type == 'PARAGRAPH'
+          block.to.eq_paragraph_node expected_node.block[index]
+          next
+        end
+        if block.type == 'LIST'
+          block.to.eq_list_node expected_node.block[index]
+          next
+        end
+      end
+    end
+    match do |actual_node|
+      actual_node.blocks.size == expected_node.blocks.size
+      actual_node.consumed == expected_node.consumed
+    end
+    failure_message do |actual_node|
+      "expected that #{actual_node} would have all the attributes the same as #{expected_node}. Attributes:\n
+      ACTUAL | EXPECTED\n
+      #{actual_node.blocks} | #{expected_node.blocks}\n
+      #{actual_node.consumed} | #{expected_node.consumed}\n"
+    end
+  end
+
   # rspec-mocks config goes here. You can use an alternate test double
   # library (such as bogus or mocha) by changing the `mock_with` option here.
   config.mock_with :rspec do |mocks|

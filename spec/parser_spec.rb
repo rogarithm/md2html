@@ -183,7 +183,37 @@ describe Md2Html::Parser, "parser" do
     it "can parse plain paragraph and list items of the same level" do
       tokens = Md2Html::Tokenizer::tokenize("- foo\n- bar\n- baz\n\n__Foo__ and *text*.\nAnother para.")
       nodes = Md2Html::Parser::parse(tokens)
-      expect(nodes.consumed).to eq 23
+
+      expect(nodes).to eq_body_node(
+        Md2Html::Parser::BodyNode.new(
+          blocks:[
+            Md2Html::Parser::ListNode.new(
+              sentences: [
+                Md2Html::Parser::Node.new(type: 'LIST_ITEM', value: ' foo', consumed: 3),
+                Md2Html::Parser::Node.new(type: 'LIST_ITEM', value: ' bar', consumed: 3),
+                Md2Html::Parser::Node.new(type: 'LIST_ITEM', value: ' baz', consumed: 3),
+              ],
+              consumed: 10
+            ),
+            Md2Html::Parser::ParagraphNode.new(
+              sentences: [
+                Md2Html::Parser::SentenceNode.new(words: [
+                  Md2Html::Parser::Node.new(type: 'BOLD', value: 'Foo', consumed: 5),
+                  Md2Html::Parser::Node.new(type: 'TEXT', value: ' and ', consumed: 1),
+                  Md2Html::Parser::Node.new(type: 'EMPHASIS', value: 'text', consumed: 3),
+                  Md2Html::Parser::Node.new(type: 'TEXT', value: '.', consumed: 1),
+                  Md2Html::Parser::Node.new(type: 'NEWLINE', value: '\n', consumed: 2)
+                ], consumed: 12),
+                Md2Html::Parser::SentenceNode.new(words: [
+                  Md2Html::Parser::Node.new(type: 'TEXT', value: 'Another para.', consumed: 1),
+                ], consumed: 1),
+              ],
+              consumed: 13
+            )
+          ],
+          consumed: 23
+        )
+      )
     end
   end
 end
