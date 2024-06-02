@@ -32,7 +32,7 @@ RSpec.configure do |config|
     expectations.include_chain_clauses_in_custom_matcher_descriptions = true
   end
 
-  def center_align_attr_info_msg left, right, max_length
+  def format_attr_info_msg left, right, max_length
     "#{left}#{' ' * (max_length - left.length)} | #{right}\n"
   end
 
@@ -62,7 +62,7 @@ RSpec.configure do |config|
     lefts_and_rights.each do |left_and_right|
       left = left_and_right[0]
       right = left_and_right[1]
-      result += "#{center_align_attr_info_msg(left, right, max_length)}"
+      result += "#{format_attr_info_msg(left, right, max_length)}"
     end
     result
   end
