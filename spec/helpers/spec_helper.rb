@@ -32,7 +32,7 @@ RSpec.configure do |config|
     expectations.include_chain_clauses_in_custom_matcher_descriptions = true
   end
 
-  def align_node actual_node, expected_node
+  def align_node_info_msg actual_node, expected_node
     lefts = ["ACTUAL", actual_node.type, actual_node.value, actual_node.consumed.to_s]
     rights = ["EXPECTED", expected_node.type, expected_node.value, expected_node.consumed.to_s]
 
@@ -41,13 +41,13 @@ RSpec.configure do |config|
 
     result = ''
     lefts.each.with_index do |left, index|
-      result += "#{right_align_attr(left, max_length)} | #{rights[index]}\n"
+      result += "#{center_align_attr_info_msg(left, rights[index], max_length)}"
     end
     result
   end
 
-  def right_align_attr attr, max_length
-    "#{' ' * (max_length - attr.length)}#{attr}"
+  def center_align_attr_info_msg left, right, max_length
+    "#{' ' * (max_length - left.length)}#{left} | #{right}\n"
   end
 
   RSpec::Matchers.define :eq_node do |expected_node|
@@ -59,7 +59,7 @@ RSpec.configure do |config|
     failure_message do |actual_node|
       "Expected that actual_node would have all the attributes the same as expected_node.\n
 Attributes:\n
-#{align_node actual_node, expected_node}\n"
+#{align_node_info_msg actual_node, expected_node}\n"
     end
   end
 
