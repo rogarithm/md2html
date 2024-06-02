@@ -33,14 +33,17 @@ RSpec.configure do |config|
   end
 
   def align_node actual_node, expected_node
-    a= %W(ACTUAL #{actual_node.type} #{actual_node.value} #{actual_node.consumed.to_s})
-    max_length_attr = a.max {|a,b| a.length <=> b.length }
-    max_length = max_length_attr.length
+    lefts = ["ACTUAL", actual_node.type, actual_node.value, actual_node.consumed.to_s]
+    rights = ["EXPECTED", expected_node.type, expected_node.value, expected_node.consumed.to_s]
 
-    "ACTUAL | EXPECTED\n
-#{right_align_attr(actual_node.type, max_length)} | #{expected_node.type}\n
-#{right_align_attr(actual_node.value, max_length)} | #{expected_node.value}\n
-#{right_align_attr(actual_node.consumed.to_s, max_length)} | #{expected_node.consumed}\n"
+    longest_attr = lefts.max { |a,b| a.length <=> b.length }
+    max_length = longest_attr.length
+
+    result = ''
+    lefts.each.with_index do |left, index|
+      result += "#{right_align_attr(left, max_length)} | #{rights[index]}\n"
+    end
+    result
   end
 
   def right_align_attr attr, max_length
