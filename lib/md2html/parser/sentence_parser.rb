@@ -1,37 +1,34 @@
 require_relative "base_parser"
-require_relative "matches_first"
-
-require_relative '../util/logger_factory'
+require_relative "matches_star"
+require_relative "node"
+require_relative "sentence_node"
 
 module Md2Html
   module Parser
     class SentenceParser < BaseParser
-      include MatchesFirst
-
-      def initialize
-        @logger ||= Md2Html::Util::LoggerFactory.make_logger()
-      end
+      include MatchesStar
 
       def match(tokens)
-        make_log_msg_before(@logger, tokens)
-        node = match_first(tokens, inline_parser, text_parser)
-        make_log_msg_after(@logger, node)
-        node
-      end
+        nodes, consumed = match_star tokens, with: sentence_element_parser
+        return Node.null if nodes.empty?
 
-      def make_log_msg_before(logger, tokens)
-        path = "#{File.dirname(__FILE__).split("/")[-2..-1].join("/")}/#{File.basename(__FILE__)}"
-        logger.debug("#{path} parsing #{tokens.size} tokens...")
-      end
-
-      def make_log_msg_after(logger, node)
-        path = "#{File.dirname(__FILE__).split("/")[-2..-1].join("/")}/#{File.basename(__FILE__)}"
-        if node.null? == false
-          logger.debug("#{path} parse success. detail: <@type=\"#{node.type}\", @value=\"#{node.value}\", @consumed=#{node.consumed}>")
-        else
-          logger.debug("#{path} parse failed. result is NullNode")
+        case
+        when tokens.peek_at(consumed, 'NEWLINE', 'NEWLINE', 'EOF') == true
+          consumed += 3
+        when tokens.peek_at(consumed, 'NEWLINE', 'NEWLINE') == true
+          consumed += 2
+        when tokens.peek_at(consumed, 'NEWLINE', 'EOF') == true
+          consumed += 2
+        when tokens.peek_at(consumed, 'NEWLINE') == true
+          nodes << Node.new(type: 'NEWLINE', value: '\n', consumed: 1)
+          consumed += 1
+        when tokens.peek_at(consumed, 'EOF') == true
+          consumed += 1
         end
+
+        SentenceNode.new(words: nodes, consumed: consumed)
       end
     end
   end
 end
+

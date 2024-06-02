@@ -1,10 +1,9 @@
 require_relative "inline_parser"
+require_relative "sentence_element_parser"
 require_relative "sentence_parser"
 require_relative "text_parser"
 require_relative "block_parser"
 require_relative "paragraph_parser"
-require_relative "sentences_and_eof_parser"
-require_relative "sentences_and_newline_parser"
 require_relative "body_parser"
 require_relative "list_parser"
 require_relative "list_item_parser"
@@ -16,11 +15,10 @@ module Md2Html
       PARSERS = {
         inline_parser:                 InlineParser,
         text_parser:                   TextParser,
+        sentence_element_parser:       SentenceElementParser,
         sentence_parser:               SentenceParser,
         block_parser:                  BlockParser,
         paragraph_parser:              ParagraphParser,
-        sentences_and_eof_parser:      SentencesAndEofParser,
-        sentences_and_newline_parser:  SentencesAndNewlineParser,
         body_parser:                   BodyParser,
         list_parser:                   ListParser,
         list_item_parser:              ListItemParser,

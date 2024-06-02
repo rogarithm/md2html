@@ -10,6 +10,13 @@ module Md2Html
         @consumed = consumed
       end
 
+      def to_s
+        if self.value == nil
+          return 'EMPTY NODE'
+        end
+        " >#{self.value}<:#{self.type}:#{self.consumed}"
+      end
+
       def null?
         false
       end

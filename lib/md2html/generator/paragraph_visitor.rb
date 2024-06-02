@@ -12,8 +12,8 @@ module Md2Html
       private
 
       def sentences_for(paragraph_node)
-        paragraph_node.sentences.map do |sentences|
-          "#{sentence_visitor.visit(sentences)}"
+        paragraph_node.sentences.map do |sentence|
+          "#{sentence_visitor.visit(sentence)}"
         end.join
       end
 
