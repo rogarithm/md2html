@@ -45,16 +45,17 @@ RSpec.configure do |config|
       node_info = []
     end
 
-
     left_attr_names.each do |attr_name|
       current_attr = attr_name.to_sym
 
       if current_attr == :sentences
-        actual_inner_node = actual_node.send(current_attr)[0]
-        expected_inner_node = expected_node.send(current_attr)[0]
+        actual_inner_nodes = actual_node.send(current_attr)
+        expected_inner_nodes = expected_node.send(current_attr)
 
-        collect_node_info(actual_inner_node, expected_inner_node, true).each do |left_and_right|
-          node_info << left_and_right
+        actual_inner_nodes.each.with_index do |actual_inner_node, index|
+          collect_node_info(actual_inner_node, expected_inner_nodes[index], true).each do |left_and_right|
+            node_info << left_and_right
+          end
         end
       else
         left = actual_node.send(current_attr).to_s
