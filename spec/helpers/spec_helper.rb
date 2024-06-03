@@ -37,15 +37,14 @@ RSpec.configure do |config|
   end
 
   def collect_node_info actual_node, expected_node, is_inner
-    left_attr_names = actual_node.instance_variables.inject([]) {|result, attr_name| result << attr_name.to_s.sub(/@/,'')}
-    right_attr_names = expected_node.instance_variables.inject([]) {|result, attr_name| result << attr_name.to_s.sub(/@/,'')}
+    attr_names = actual_node.instance_variables.inject([]) {|result, attr_name| result << attr_name.to_s.sub(/@/,'')}
 
     node_info =  [["ACTUAL", "EXPECTED"]]
     if is_inner == true
       node_info = []
     end
 
-    left_attr_names.each do |attr_name|
+    attr_names.each do |attr_name|
       current_attr = attr_name.to_sym
 
       if current_attr == :sentences
