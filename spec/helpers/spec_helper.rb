@@ -47,7 +47,7 @@ RSpec.configure do |config|
     attr_names.each do |attr_name|
       current_attr = attr_name.to_sym
 
-      if current_attr == :sentences
+      if current_attr == :sentences or current_attr == :blocks
         actual_inner_nodes = actual_node.send(current_attr)
         expected_inner_nodes = expected_node.send(current_attr)
 
