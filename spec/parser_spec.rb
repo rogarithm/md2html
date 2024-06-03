@@ -73,7 +73,7 @@ describe Md2Html::Parser, "parser" do
             Md2Html::Parser::Node.new(type: 'LIST_ITEM', value: ' foo', consumed: 3),
             Md2Html::Parser::Node.new(type: 'LIST_ITEM', value: ' bar', consumed: 3)
           ],
-          consumed: 8)
+          consumed: 7)
       )
     end
   end
