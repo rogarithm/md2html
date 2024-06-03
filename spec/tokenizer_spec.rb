@@ -46,4 +46,13 @@ And this is another para.")
     expect(tokens.second.value).to eq ' first item'
   end
 
+  it "can make token of hash character" do
+    tokens = Md2Html::Tokenizer::tokenize('# heading level 1')
+
+    expect(tokens.first.type).to eq 'HASH'
+    expect(tokens.first.value).to eq '#'
+
+    expect(tokens.second.type).to eq 'TEXT'
+    expect(tokens.second.value).to eq ' heading level 1'
+  end
 end
