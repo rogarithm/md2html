@@ -43,7 +43,9 @@ describe Md2Html::Parser, "parser" do
       list_nl_eof_token = Md2Html::Tokenizer::tokenize("- foo\n")
       expect(parser.match(list_nl_eof_token)).to eq_list_node(
         Md2Html::Parser::ListNode.new(
-          sentences: Md2Html::Parser::Node.new(type: 'LIST_ITEM', value: ' foo', consumed: 3),
+          sentences: [
+            Md2Html::Parser::Node.new(type: 'LIST_ITEM', value: ' foo', consumed: 3)
+          ],
           consumed: 4)
       )
     end
@@ -54,7 +56,9 @@ describe Md2Html::Parser, "parser" do
       list_nl_nl_eof_token = Md2Html::Tokenizer::tokenize("- foo\n\n")
       expect(parser.match(list_nl_nl_eof_token)).to eq_list_node(
         Md2Html::Parser::ListNode.new(
-          sentences: Md2Html::Parser::Node.new(type: 'LIST_ITEM', value: ' foo', consumed: 3),
+          sentences: [
+            Md2Html::Parser::Node.new(type: 'LIST_ITEM', value: ' foo', consumed: 3)
+          ],
           consumed: 5)
       )
     end
