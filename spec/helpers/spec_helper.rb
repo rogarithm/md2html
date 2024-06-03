@@ -53,8 +53,8 @@ RSpec.configure do |config|
         expected_inner_nodes = expected_node.send(current_attr)
 
         actual_inner_nodes.each.with_index do |actual_inner_node, index|
-          collect_node_info(actual_inner_node, expected_inner_nodes[index], true).each do |left_and_right|
-            node_info << left_and_right
+          collect_node_info(actual_inner_node, expected_inner_nodes[index], true).each do |pair|
+            node_info << pair
           end
         end
       else
@@ -72,15 +72,15 @@ RSpec.configure do |config|
   end
 
   def generate_node_info_msg_body info_obj
-    lefts_and_rights = info_obj
+    pairs = info_obj
 
-    longest_attr_pair = lefts_and_rights.max { |a,b| a[0].length <=> b[0].length }
+    longest_attr_pair = pairs.max { |a,b| a[0].length <=> b[0].length }
     max_length = longest_attr_pair[0].length
 
     result = ""
-    lefts_and_rights.each do |left_and_right|
-      left = left_and_right[0]
-      right = left_and_right[1]
+    pairs.each do |pair|
+      left = pair[0]
+      right = pair[1]
       result += "#{format_attr_info_msg(left, right, max_length)}"
     end
     result
