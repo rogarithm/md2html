@@ -37,7 +37,7 @@ describe Md2Html::Parser, "parser" do
   end
 
   context "list items parser" do
-    it "can parse list items ends with newline and eof" do
+    it "can parse list item ends with eof" do
       parser = Md2Html::Parser::ParserFactory.build(:list_items_parser)
 
       list_nl_eof_token = Md2Html::Tokenizer::tokenize("- foo\n")
