@@ -130,10 +130,7 @@ Attributes:\n\n"
       actual_node.consumed == expected_node.consumed
     end
     failure_message do |actual_node|
-      "expected that #{actual_node} would have all the attributes the same as #{expected_node}. Attributes:\n
-      ACTUAL | EXPECTED\n
-      #{actual_node.words} | #{expected_node.words}\n
-      #{actual_node.consumed} | #{expected_node.consumed}\n"
+      "#{generate_node_info_msg actual_node, expected_node}\n"
     end
   end
 
@@ -148,10 +145,7 @@ Attributes:\n\n"
       actual_node.consumed == expected_node.consumed
     end
     failure_message do |actual_node|
-      "expected that #{actual_node} would have all the attributes the same as #{expected_node}. Attributes:\n
-      ACTUAL | EXPECTED\n
-      #{actual_node.sentences} | #{expected_node.sentences}\n
-      #{actual_node.consumed} | #{expected_node.consumed}\n"
+      "#{generate_node_info_msg actual_node, expected_node}\n"
     end
   end
 
@@ -173,10 +167,7 @@ Attributes:\n\n"
       actual_node.consumed == expected_node.consumed
     end
     failure_message do |actual_node|
-      "expected that #{actual_node} would have all the attributes the same as #{expected_node}. Attributes:\n
-      ACTUAL | EXPECTED\n
-      #{actual_node.blocks} | #{expected_node.blocks}\n
-      #{actual_node.consumed} | #{expected_node.consumed}\n"
+      "#{generate_node_info_msg actual_node, expected_node}\n"
     end
   end
 
