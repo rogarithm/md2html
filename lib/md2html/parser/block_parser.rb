@@ -7,7 +7,7 @@ module Md2Html
       include MatchesFirst
 
       def match(tokens)
-        match_first tokens, list_parser, paragraph_parser
+        match_first tokens, heading_parser, list_parser, paragraph_parser
       end
     end
   end
