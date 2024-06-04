@@ -1,6 +1,7 @@
 require_relative "inline_parser"
 require_relative "sentence_element_parser"
 require_relative "sentence_parser"
+require_relative "heading_parser"
 require_relative "text_parser"
 require_relative "block_parser"
 require_relative "paragraph_parser"
@@ -17,6 +18,7 @@ module Md2Html
         text_parser:                   TextParser,
         sentence_element_parser:       SentenceElementParser,
         sentence_parser:               SentenceParser,
+        heading_parser:                HeadingParser,
         block_parser:                  BlockParser,
         paragraph_parser:              ParagraphParser,
         body_parser:                   BodyParser,

@@ -179,6 +179,17 @@ describe Md2Html::Parser, "parser" do
     end
   end
 
+  it "heading parser parse text that has hash character" do
+    parser = create_parser(:heading_parser)
+
+    tokens = tokenize("# title\n")
+    node = parser.match(tokens)
+
+    expect(node).to eq_node(
+      create_node(type: 'HEADING', value: ' title', consumed: 3)
+    )
+  end
+
   it "block parser parse text that has dash character" do
     parser = create_parser(:block_parser)
 
