@@ -2,8 +2,17 @@ require 'rake/clean'
 require 'rspec/core/rake_task'
 
 namespace :test do
-  desc 'run all spec'
-  task :all => [:token, :parser, :generator, :concern] do
+  desc 'run all specs and tests'
+  task :all => [:token, :parser, :generator, :concern, :file] do
+  end
+
+  desc 'run file based test'
+  task :file do
+    `ruby test/run_tests.rb`
+  end
+
+  desc 'run all specs'
+  task :specs => [:token, :parser, :generator, :concern] do
   end
 
   desc 'run token spec'
