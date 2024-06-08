@@ -7,13 +7,21 @@ RSpec.configure do |config|
   config.example_status_persistence_file_path = 'spec/pass_fail_history'
 end
 
+def create_token attrs
+  Md2Html::Tokenizer::Token.new attrs
+end
+
+def create_eof_token
+  Md2Html::Tokenizer::Token.end_of_file
+end
+
 describe Md2Html::Tokenizer do
   it "tokenize text" do
     tokens = Md2Html::Tokenizer::tokenize('Hi')
 
     expect(tokens).to eq_token_list(Md2Html::Tokenizer::TokenList.new(
-      [Md2Html::Tokenizer::Token.new(type: 'TEXT', value: 'Hi'),
-       Md2Html::Tokenizer::Token.end_of_file]
+      [create_token(type: 'TEXT', value: 'Hi'),
+       create_eof_token]
     ))
   end
 
