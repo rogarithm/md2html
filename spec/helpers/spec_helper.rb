@@ -14,6 +14,7 @@
 #
 # See https://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 require_relative './file_helper'
+require_relative './token_matcher'
 require_relative './node_matcher'
 
 RSpec.configure do |config|

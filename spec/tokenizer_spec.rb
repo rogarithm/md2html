@@ -10,8 +10,11 @@ end
 describe Md2Html::Tokenizer do
   it "tokenize text" do
     tokens = Md2Html::Tokenizer::tokenize('Hi')
-    expect(tokens.first.type).to eq 'TEXT'
-    expect(tokens.first.value).to eq 'Hi'
+
+    expect(tokens).to eq_token_list(Md2Html::Tokenizer::TokenList.new(
+      [Md2Html::Tokenizer::Token.new(type: 'TEXT', value: 'Hi'),
+       Md2Html::Tokenizer::Token.end_of_file]
+    ))
   end
 
   it "tokenize text with underscores" do
