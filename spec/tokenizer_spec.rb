@@ -35,7 +35,6 @@ describe Md2Html::Tokenizer do
 This is a _quite_ **long** text for what we've been testing so far.
 
 And this is another para.")
-    #puts tokens
     expect(true).to eq true
   end
 
