@@ -186,7 +186,7 @@ describe Md2Html::Parser, "parser" do
     node = parser.match(tokens)
 
     expect(node).to eq_node(
-      create_node(type: 'HEADING', value: ' title', consumed: 3)
+      create_node(type: 'HEADING', value: ' title', consumed: 4)
     )
   end
 
@@ -207,7 +207,7 @@ describe Md2Html::Parser, "parser" do
       node = parser.match(tokens)
 
       expect(node).to eq_node(
-        create_node(type: 'HEADING', value: ' title', consumed: 3)
+        create_node(type: 'HEADING', value: ' title', consumed: 4)
       )
     end
   end

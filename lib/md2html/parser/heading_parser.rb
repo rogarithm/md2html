@@ -9,7 +9,13 @@ module Md2Html
 
       def match(tokens)
         return Node.null unless tokens.peek_or(%w(HASH TEXT NEWLINE))
-        Node.new(type: 'HEADING', value: tokens.second.value, consumed: 4)
+        if tokens.peek_or(%w(HASH TEXT NEWLINE NEWLINE)) == true
+          Node.new(type: 'HEADING', value: tokens.second.value, consumed: 4)
+        elsif tokens.peek_or(%w(HASH TEXT NEWLINE EOF)) == true
+          Node.new(type: 'HEADING', value: tokens.second.value, consumed: 4)
+        elsif tokens.peek_or(%w(HASH TEXT NEWLINE)) == true
+          Node.new(type: 'HEADING', value: tokens.second.value, consumed: 3)
+        end
       end
     end
   end
