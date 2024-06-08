@@ -7,6 +7,10 @@ RSpec.configure do |config|
   config.example_status_persistence_file_path = 'spec/pass_fail_history'
 end
 
+def tokenize plain_text
+  Md2Html::Tokenizer::tokenize plain_text
+end
+
 def create_token attrs
   Md2Html::Tokenizer::Token.new attrs
 end
@@ -17,7 +21,7 @@ end
 
 describe Md2Html::Tokenizer do
   it "tokenize text" do
-    tokens = Md2Html::Tokenizer::tokenize('Hi')
+    tokens = tokenize('Hi')
 
     expect(tokens).to eq_token_list(Md2Html::Tokenizer::TokenList.new(
       [create_token(type: 'TEXT', value: 'Hi'),
@@ -26,7 +30,7 @@ describe Md2Html::Tokenizer do
   end
 
   it "tokenize text with underscores" do
-    tokens = Md2Html::Tokenizer::tokenize('_Foo_')
+    tokens = tokenize('_Foo_')
 
     expect(tokens.first.type).to eq 'UNDERSCORE'
     expect(tokens.first.value).to eq '_'
@@ -39,7 +43,7 @@ describe Md2Html::Tokenizer do
   end
 
   it "tokenize paragraph" do
-    tokens = Md2Html::Tokenizer::tokenize("Hello, World!
+    tokens = tokenize("Hello, World!
 This is a _quite_ **long** text for what we've been testing so far.
 
 And this is another para.")
@@ -47,7 +51,7 @@ And this is another para.")
   end
 
   it "tokenize text with dash" do
-    tokens = Md2Html::Tokenizer::tokenize('- first item')
+    tokens = tokenize('- first item')
 
     expect(tokens.first.type).to eq 'DASH'
     expect(tokens.first.value).to eq '-'
@@ -57,7 +61,7 @@ And this is another para.")
   end
 
   it "can make token of hash character" do
-    tokens = Md2Html::Tokenizer::tokenize('# heading level 1')
+    tokens = tokenize('# heading level 1')
 
     expect(tokens.first.type).to eq 'HASH'
     expect(tokens.first.value).to eq '#'
