@@ -48,4 +48,8 @@ describe Md2Html::Generator do
   <li>baz</li>
 </ul>\n"
   end
+
+  it "generates html from level 1 heading" do
+    expect(generate("# title\n")).to eq "<h1> title</h1>\n"
+  end
 end

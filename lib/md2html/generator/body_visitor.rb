@@ -1,5 +1,6 @@
 require_relative "paragraph_visitor"
 require_relative "list_visitor"
+require_relative "heading_visitor"
 
 module Md2Html
   module Generator
@@ -10,6 +11,8 @@ module Md2Html
             paragraph_visitor.visit(block)
           elsif block.type == "LIST"
             list_visitor.visit(block)
+          elsif block.type == "HEADING"
+            heading_visitor.visit(block)
           end
         end.join("\n") << "\n"
       end
@@ -22,6 +25,10 @@ module Md2Html
 
       def list_visitor
         @list_visitor ||= ListVisitor.new
+      end
+
+      def heading_visitor
+        @heading_visitor ||= HeadingVisitor.new
       end
     end
   end

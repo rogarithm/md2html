@@ -179,13 +179,37 @@ describe Md2Html::Parser, "parser" do
     end
   end
 
-  it "block parser parse text that has dash character" do
-    parser = create_parser(:block_parser)
+  it "heading parser parse text that has hash character" do
+    parser = create_parser(:heading_parser)
 
-    tokens = tokenize("- foo")
-    paragraph_node = parser.match(tokens)
+    tokens = tokenize("# title\n")
+    node = parser.match(tokens)
 
-    expect(paragraph_node.consumed).to eq 3
+    expect(node).to eq_node(
+      create_node(type: 'HEADING', value: ' title', consumed: 4)
+    )
+  end
+
+  context "block parser" do
+    it "can parse text that has dash character" do
+      parser = create_parser(:block_parser)
+
+      tokens = tokenize("- foo")
+      paragraph_node = parser.match(tokens)
+
+      expect(paragraph_node.consumed).to eq 3
+    end
+
+    it "can parse text that has hash character" do
+      parser = create_parser(:block_parser)
+
+      tokens = tokenize("# title\n")
+      node = parser.match(tokens)
+
+      expect(node).to eq_node(
+        create_node(type: 'HEADING', value: ' title', consumed: 4)
+      )
+    end
   end
 
   it "body parser parse text that has dash character" do
@@ -248,6 +272,42 @@ describe Md2Html::Parser, "parser" do
             )
           ],
           consumed: 23
+        )
+      )
+    end
+
+    it "can parse text that has heading" do
+      tokens = tokenize("# title\n")
+      node = parse(tokens)
+
+      expect(node).to eq_body_node(
+        create_body_node(
+          blocks: [
+            create_node(type: 'HEADING', value: ' title', consumed: 4)
+          ],
+          consumed: 4
+        )
+      )
+    end
+
+    it "can parse text that has heading and another" do
+      tokens = tokenize("# title\n\nand another blocks")
+      node = parse(tokens)
+
+      expect(node).to eq_body_node(
+        create_body_node(
+          blocks: [
+            create_node(type: 'HEADING', value: ' title', consumed: 4),
+            create_paragraph_node(
+              sentences: [
+                create_sentence_node(words: [
+                  create_node(type: 'TEXT', value: 'and another blocks', consumed: 1),
+                ], consumed: 2)
+              ],
+              consumed: 2
+            )
+          ],
+          consumed: 6
         )
       )
     end
