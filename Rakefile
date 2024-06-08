@@ -1,27 +1,40 @@
 require 'rake/clean'
 require 'rspec/core/rake_task'
 
-task :test_token do
-  RSpec::Core::RakeTask.new(:spec) do |t|
-    t.pattern = 'spec/token*.rb'
+namespace :test do
+  desc 'run all spec'
+  task :all => [:token, :parser, :generator, :concern] do
   end
-  Rake::Task["spec"].execute
-end
-task :test_parser do
-  RSpec::Core::RakeTask.new(:spec) do |t|
-    t.pattern = 'spec/parser_spec.rb'
+
+  desc 'run token spec'
+  task :token do
+    RSpec::Core::RakeTask.new(:token_spec) do |t|
+      t.pattern = 'spec/token*.rb'
+    end
+    Rake::Task[:token_spec].execute
   end
-  Rake::Task["spec"].execute
-end
-task :test_generator do
-  RSpec::Core::RakeTask.new(:spec) do |t|
-    t.pattern = 'spec/generator_spec.rb'
+
+  desc 'run parser spec'
+  task :parser do
+    RSpec::Core::RakeTask.new(:parser_spec) do |t|
+      t.pattern = 'spec/parser_spec.rb'
+    end
+    Rake::Task[:parser_spec].execute
   end
-  Rake::Task["spec"].execute
-end
-task :test_concern do
-  RSpec::Core::RakeTask.new(:spec) do |t|
-    t.pattern = 'spec/concern_spec.rb'
+
+  desc 'run generator spec'
+  task :generator do
+    RSpec::Core::RakeTask.new(:generator_spec) do |t|
+      t.pattern = 'spec/generator_spec.rb'
+    end
+    Rake::Task[:generator_spec].execute
   end
-  Rake::Task["spec"].execute
+
+  desc 'run concern spec'
+  task :concern do
+    RSpec::Core::RakeTask.new(:concern_spec) do |t|
+      t.pattern = 'spec/concern_spec.rb'
+    end
+    Rake::Task[:concern_spec].execute
+  end
 end
