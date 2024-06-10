@@ -7,52 +7,87 @@ RSpec.configure do |config|
   config.example_status_persistence_file_path = 'spec/pass_fail_history'
 end
 
+def tokenize plain_text
+  Md2Html::Tokenizer::tokenize plain_text
+end
+
+def create_token attrs
+  Md2Html::Tokenizer::Token.new attrs
+end
+
+def create_eof_token
+  Md2Html::Tokenizer::Token.end_of_file
+end
+
+def create_token_list tokens
+  Md2Html::Tokenizer::TokenList.new tokens
+end
+
 describe Md2Html::Tokenizer do
   it "tokenize text" do
-    tokens = Md2Html::Tokenizer::tokenize('Hi')
-    expect(tokens.first.type).to eq 'TEXT'
-    expect(tokens.first.value).to eq 'Hi'
+    tokens = tokenize('Hi')
+
+    expect(tokens).to eq_token_list(create_token_list(
+      [create_token(type: 'TEXT', value: 'Hi'),
+       create_eof_token]
+    ))
   end
 
   it "tokenize text with underscores" do
-    tokens = Md2Html::Tokenizer::tokenize('_Foo_')
+    tokens = tokenize('_Foo_')
 
-    expect(tokens.first.type).to eq 'UNDERSCORE'
-    expect(tokens.first.value).to eq '_'
-
-    expect(tokens.second.type).to eq 'TEXT'
-    expect(tokens.second.value).to eq 'Foo'
-
-    expect(tokens.third.type).to eq 'UNDERSCORE'
-    expect(tokens.third.value).to eq '_'
+    expect(tokens).to eq_token_list(create_token_list(
+      [create_token(type: 'UNDERSCORE', value: '_'),
+       create_token(type: 'TEXT', value: 'Foo'),
+       create_token(type: 'UNDERSCORE', value: '_'),
+       create_eof_token]
+    ))
   end
 
   it "tokenize paragraph" do
-    tokens = Md2Html::Tokenizer::tokenize("Hello, World!
+    tokens = tokenize("Hello, World!
 This is a _quite_ **long** text for what we've been testing so far.
 
 And this is another para.")
-    #puts tokens
-    expect(true).to eq true
+
+    expect(tokens).to eq_token_list(create_token_list([
+      create_token(type: 'TEXT', value: 'Hello, World!'),
+      create_token(type: 'NEWLINE', value: "\n"),
+      create_token(type: 'TEXT', value: 'This is a '),
+      create_token(type: 'UNDERSCORE', value: '_'),
+      create_token(type: 'TEXT', value: 'quite'),
+      create_token(type: 'UNDERSCORE', value: '_'),
+      create_token(type: 'TEXT', value: ' '),
+      create_token(type: 'STAR', value: '*'),
+      create_token(type: 'STAR', value: '*'),
+      create_token(type: 'TEXT', value: 'long'),
+      create_token(type: 'STAR', value: '*'),
+      create_token(type: 'STAR', value: '*'),
+      create_token(type: 'TEXT', value: ' text for what we\'ve been testing so far.'),
+      create_token(type: 'NEWLINE', value: "\n"),
+      create_token(type: 'NEWLINE', value: "\n"),
+      create_token(type: 'TEXT', value: 'And this is another para.'),
+      create_eof_token
+    ]))
   end
 
   it "tokenize text with dash" do
-    tokens = Md2Html::Tokenizer::tokenize('- first item')
+    tokens = tokenize('- first item')
 
-    expect(tokens.first.type).to eq 'DASH'
-    expect(tokens.first.value).to eq '-'
-
-    expect(tokens.second.type).to eq 'TEXT'
-    expect(tokens.second.value).to eq ' first item'
+    expect(tokens).to eq_token_list(create_token_list([
+      create_token(type: 'DASH', value: '-'),
+      create_token(type: 'TEXT', value: ' first item'),
+      create_eof_token
+    ]))
   end
 
   it "can make token of hash character" do
-    tokens = Md2Html::Tokenizer::tokenize('# heading level 1')
+    tokens = tokenize('# heading level 1')
 
-    expect(tokens.first.type).to eq 'HASH'
-    expect(tokens.first.value).to eq '#'
-
-    expect(tokens.second.type).to eq 'TEXT'
-    expect(tokens.second.value).to eq ' heading level 1'
+    expect(tokens).to eq_token_list(create_token_list([
+      create_token(type: 'HASH', value: '#'),
+      create_token(type: 'TEXT', value: ' heading level 1'),
+      create_token(type: 'EOF', value: '')
+    ]))
   end
 end
