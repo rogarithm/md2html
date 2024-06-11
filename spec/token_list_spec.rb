@@ -11,7 +11,14 @@ RSpec.configure do |config|
 end
 
 describe Md2Html::Tokenizer::TokenList do
-  it "peek_or() returns true if at least one matching token exists" do
+  it "peek() returns true only when given token types are in same order with given token list" do
+    token_list = Md2Html::Tokenizer::tokenize('_Foo_')
+    expect(token_list.peek('UNDERSCORE', 'TEXT', 'UNDERSCORE')).to eq true
+    expect(token_list.peek('TEXT')).to eq false
+    expect(token_list.peek('UNDERSCORE', 'UNDERSCORE', 'TEXT')).to eq false
+  end
+
+  it "peek_or() returns true when at least 1 matching token exists" do
     token_list = Md2Html::Tokenizer::tokenize('_Foo_')
     expect(token_list.peek_or(%w(TEXT), %w(UNDERSCORE TEXT UNDERSCORE))).to eq true
     expect(token_list.peek_or(%w(UNDERSCORE TEXT UNDERSCORE), %w(TEXT))).to eq true
@@ -20,13 +27,6 @@ describe Md2Html::Tokenizer::TokenList do
   it "peek_or() dash" do
     token_list = Md2Html::Tokenizer::tokenize('-')
     expect(token_list.peek_or(%w(DASH))).to eq true
-  end
-
-  it "should give tokens to peek() in same order with given token list" do
-    token_list = Md2Html::Tokenizer::tokenize('_Foo_')
-    expect(token_list.peek('UNDERSCORE', 'TEXT', 'UNDERSCORE')).to eq true
-    expect(token_list.peek('TEXT')).to eq false
-    expect(token_list.peek('UNDERSCORE', 'UNDERSCORE', 'TEXT')).to eq false
   end
 
   it "peek_at() needs token position to check" do
