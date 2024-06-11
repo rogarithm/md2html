@@ -5,8 +5,6 @@ require_relative 'node'
 module Md2Html
   module Parser
     class HeadingParser < BaseParser
-      include MatchesFirst
-
       def match(tokens)
         return Node.null unless tokens.peek_or(%w(HASH TEXT NEWLINE))
         if tokens.peek_or(%w(HASH TEXT NEWLINE NEWLINE)) == true
