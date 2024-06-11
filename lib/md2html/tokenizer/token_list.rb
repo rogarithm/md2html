@@ -27,7 +27,7 @@ module Md2Html
         false
       end
 
-      def peek_at(index, *expected_token_type_sequence)
+      def peek_from(index, *expected_token_type_sequence)
         return offset(index).peek(*expected_token_type_sequence)
       end
 

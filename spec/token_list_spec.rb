@@ -29,15 +29,15 @@ describe Md2Html::Tokenizer::TokenList do
     expect(token_list.peek_or(%w(DASH))).to eq true
   end
 
-  it "peek_at() needs token position to check" do
+  it "peek_from() needs token position to check" do
     token_list = Md2Html::Tokenizer::tokenize('_Foo_')
-    expect(token_list.peek_at(1, 'TEXT')).to eq true
-    expect(token_list.peek_at(2, 'UNDERSCORE')).to eq true
+    expect(token_list.peek_from(1, 'TEXT')).to eq true
+    expect(token_list.peek_from(2, 'UNDERSCORE')).to eq true
   end
 
-  it "can put over 1 token to peek_at()" do
+  it "can put over 1 token to peek_from()" do
     token_list = Md2Html::Tokenizer::tokenize('_Foo_')
-    expect(token_list.peek_at(1, 'TEXT', 'UNDERSCORE')).to eq true
+    expect(token_list.peek_from(1, 'TEXT', 'UNDERSCORE')).to eq true
   end
 
   it "grab() picks tokens of smaller count than total token count" do

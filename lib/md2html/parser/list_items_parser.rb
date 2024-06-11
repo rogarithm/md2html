@@ -14,11 +14,11 @@ module Md2Html
         return Node.null if nodes.empty?
 
         case
-        when tokens.peek_at(consumed, 'NEWLINE', 'EOF') == true
+        when tokens.peek_from(consumed, 'NEWLINE', 'EOF') == true
           consumed += 2
-        when tokens.peek_at(consumed, 'EOF') == true
+        when tokens.peek_from(consumed, 'EOF') == true
           consumed += 1
-        when tokens.peek_at(consumed, 'NEWLINE') == true
+        when tokens.peek_from(consumed, 'NEWLINE') == true
           consumed += 1
         end
 
