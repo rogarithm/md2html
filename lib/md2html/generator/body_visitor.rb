@@ -11,7 +11,7 @@ module Md2Html
             paragraph_visitor.visit(block)
           elsif block.type == "LIST"
             list_visitor.visit(block)
-          elsif block.type == "HEADING"
+          elsif block.type.start_with? "HEADING"
             heading_visitor.visit(block)
           end
         end.join("\n") << "\n"

@@ -52,4 +52,8 @@ describe Md2Html::Generator do
   it "generates html from level 1 heading" do
     expect(generate("# title\n")).to eq "<h1> title</h1>\n"
   end
+
+  it "generates html from level 2 heading" do
+    expect(generate("## title\n")).to eq "<h2> title</h2>\n"
+  end
 end
