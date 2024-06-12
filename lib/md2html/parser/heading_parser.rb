@@ -5,16 +5,30 @@ require_relative 'node'
 module Md2Html
   module Parser
     class HeadingParser < BaseParser
-      include MatchesFirst
-
       def match(tokens)
-        return Node.null unless tokens.peek_or(%w(HASH TEXT NEWLINE))
-        if tokens.peek_or(%w(HASH TEXT NEWLINE NEWLINE)) == true
-          Node.new(type: 'HEADING', value: tokens.second.value, consumed: 4)
-        elsif tokens.peek_or(%w(HASH TEXT NEWLINE EOF)) == true
-          Node.new(type: 'HEADING', value: tokens.second.value, consumed: 4)
-        elsif tokens.peek_or(%w(HASH TEXT NEWLINE)) == true
-          Node.new(type: 'HEADING', value: tokens.second.value, consumed: 3)
+        return Node.null if tokens.peek_from(0, 'HASH') == false
+
+        left = Node.null
+        hash_count = 0
+        if tokens.peek_from(0, 'HASH', 'HASH')
+          left = tokens.offset(2)
+          hash_count = 2
+        elsif tokens.peek_from(0, 'HASH')
+          left = tokens.offset(1)
+          hash_count = 1
+        end
+
+        node_type = 'HEADING'
+        if hash_count == 2
+          node_type += '_LEVEL2'
+        end
+
+        if left.peek_or(%w(TEXT NEWLINE NEWLINE)) == true
+          Node.new(type: node_type, value: left.first.value, consumed: 3 + hash_count)
+        elsif left.peek_or(%w(TEXT NEWLINE EOF)) == true
+          Node.new(type: node_type, value: left.first.value, consumed: 3 + hash_count)
+        elsif left.peek_or(%w(TEXT NEWLINE)) == true
+          Node.new(type: node_type, value: left.first.value, consumed: 2 + hash_count)
         end
       end
     end

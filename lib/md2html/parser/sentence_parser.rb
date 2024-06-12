@@ -13,16 +13,16 @@ module Md2Html
         return Node.null if nodes.empty?
 
         case
-        when tokens.peek_at(consumed, 'NEWLINE', 'NEWLINE', 'EOF') == true
+        when tokens.peek_from(consumed, 'NEWLINE', 'NEWLINE', 'EOF') == true
           consumed += 3
-        when tokens.peek_at(consumed, 'NEWLINE', 'NEWLINE') == true
+        when tokens.peek_from(consumed, 'NEWLINE', 'NEWLINE') == true
           consumed += 2
-        when tokens.peek_at(consumed, 'NEWLINE', 'EOF') == true
+        when tokens.peek_from(consumed, 'NEWLINE', 'EOF') == true
           consumed += 2
-        when tokens.peek_at(consumed, 'NEWLINE') == true
+        when tokens.peek_from(consumed, 'NEWLINE') == true
           nodes << Node.new(type: 'NEWLINE', value: '\n', consumed: 1)
           consumed += 1
-        when tokens.peek_at(consumed, 'EOF') == true
+        when tokens.peek_from(consumed, 'EOF') == true
           consumed += 1
         end
 

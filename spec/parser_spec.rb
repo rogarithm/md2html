@@ -212,6 +212,28 @@ describe Md2Html::Parser, "parser" do
     end
   end
 
+  context "heading parser" do
+    it "can parse text that has heading" do
+      parser = create_parser(:heading_parser)
+      tokens = tokenize("# title\n")
+      node = parser.match(tokens)
+
+      expect(node).to eq_node(
+        create_node(type: 'HEADING', value: ' title', consumed: 4)
+      )
+    end
+
+    it "can parse text that has level 2 heading" do
+      parser = create_parser(:heading_parser)
+      tokens = tokenize("## title\n")
+      node = parser.match(tokens)
+
+      expect(node).to eq_node(
+        create_node(type: 'HEADING_LEVEL2', value: ' title', consumed: 5)
+      )
+    end
+  end
+
   it "body parser parse text that has dash character" do
     parser = create_parser(:body_parser)
 
@@ -290,6 +312,20 @@ describe Md2Html::Parser, "parser" do
       )
     end
 
+    it "can parse text that has level 2 heading" do
+      tokens = tokenize("## title\n")
+      node = parse(tokens)
+
+      expect(node).to eq_body_node(
+        create_body_node(
+          blocks: [
+            create_node(type: 'HEADING_LEVEL2', value: ' title', consumed: 5)
+          ],
+          consumed: 5
+        )
+      )
+    end
+
     it "can parse text that has heading and another" do
       tokens = tokenize("# title\n\nand another blocks")
       node = parse(tokens)
@@ -308,6 +344,28 @@ describe Md2Html::Parser, "parser" do
             )
           ],
           consumed: 6
+        )
+      )
+    end
+
+    it "can parse text that has level 2 heading and another" do
+      tokens = tokenize("## title\n\nand another blocks")
+      node = parse(tokens)
+
+      expect(node).to eq_body_node(
+        create_body_node(
+          blocks: [
+            create_node(type: 'HEADING_LEVEL2', value: ' title', consumed: 5),
+            create_paragraph_node(
+              sentences: [
+                create_sentence_node(words: [
+                  create_node(type: 'TEXT', value: 'and another blocks', consumed: 1),
+                ], consumed: 2)
+              ],
+              consumed: 2
+            )
+          ],
+          consumed: 7
         )
       )
     end

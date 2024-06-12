@@ -90,4 +90,15 @@ And this is another para.")
       create_token(type: 'EOF', value: '')
     ]))
   end
+
+  it "can make token of multiple hash character" do
+    tokens = tokenize('## heading level 2')
+
+    expect(tokens).to eq_token_list(create_token_list([
+      create_token(type: 'HASH', value: '#'),
+      create_token(type: 'HASH', value: '#'),
+      create_token(type: 'TEXT', value: ' heading level 2'),
+      create_token(type: 'EOF', value: '')
+    ]))
+  end
 end

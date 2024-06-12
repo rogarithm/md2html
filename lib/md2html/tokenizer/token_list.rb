@@ -12,23 +12,23 @@ module Md2Html
         tokens.each(&block)
       end
 
-      def peek_or(*choices)
-        choices.each do |tokens|
-          return true if peek(*tokens)
-        end
-        false
-      end
-
-      def peek(*types)
-        types.each_with_index do |type, index|
+      def peek(*expected_token_type_sequence)
+        expected_token_type_sequence.each_with_index do |token_type, index|
           return false if tokens.empty?
-          return false if type != tokens[index].type
+          return false if token_type != tokens[index].type
         end
         true
       end
 
-      def peek_at(index, *types)
-        return offset(index).peek(*types)
+      def peek_or(*expected_token_type_sequences)
+        expected_token_type_sequences.each do |token_type_sequence|
+          return true if peek(*token_type_sequence)
+        end
+        false
+      end
+
+      def peek_from(index, *expected_token_type_sequence)
+        return offset(index).peek(*expected_token_type_sequence)
       end
 
       def grab!(amount)
