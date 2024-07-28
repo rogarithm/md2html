@@ -17,6 +17,7 @@ module Md2Html
           consumed += 3
         when tokens.peek_from(consumed, 'NEWLINE', 'NEWLINE') == true
           consumed += 2
+          return SentenceNode.ends_early({words: nodes, consumed: consumed})
         when tokens.peek_from(consumed, 'NEWLINE', 'EOF') == true
           consumed += 2
         when tokens.peek_from(consumed, 'NEWLINE') == true

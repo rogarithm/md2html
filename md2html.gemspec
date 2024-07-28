@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name                  = %q{md2html}
-  s.version               = "0.0.0"
+  s.version               = "0.1.0"
   s.description           = %q{A simple markdown to html converter}
   s.date                  = %q{2024-03-26}
 

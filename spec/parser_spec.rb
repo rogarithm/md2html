@@ -165,7 +165,7 @@ describe Md2Html::Parser, "parser" do
             create_node(type: 'TEXT', value: ' and ', consumed: 1),
             create_node(type: 'EMPHASIS', value: 'text', consumed: 3),
             create_node(type: 'TEXT', value: '.', consumed: 1),
-            create_node(type: 'NEWLINE', value: '\n', consumed: 2)
+            create_node(type: 'NEWLINE', value: '\n', consumed: 1)
           ], consumed: 12),
           create_sentence_node(words: [
             create_node(type: 'BOLD', value: 'Foo', consumed: 5),
@@ -175,6 +175,36 @@ describe Md2Html::Parser, "parser" do
           ], consumed: 10),
         ],
         consumed: 22
+      )
+    end
+
+    it "can detect paragraph that ends early" do
+      parser = create_parser(:paragraph_parser)
+
+      tokens = tokenize("**Foo**\n\nAnother para.")
+      early_ends_1_sentence_para = parser.match(tokens)
+      expect(early_ends_1_sentence_para).to eq_paragraph_node create_paragraph_node(
+        sentences: [
+          Md2Html::Parser::SentenceNode.ends_early(words: [
+            create_node(type: 'BOLD', value: 'Foo', consumed: 5)
+          ], consumed: 7)
+        ],
+        consumed: 7
+      )
+
+      tokens_b = tokenize("**Foo**\nBar\n\nAnother para.")
+      early_ends_2_sentences_para = parser.match(tokens_b)
+      expect(early_ends_2_sentences_para).to eq_paragraph_node create_paragraph_node(
+        sentences: [
+          create_sentence_node(words: [
+            create_node(type: 'BOLD', value: 'Foo', consumed: 5),
+            create_node(type: 'NEWLINE', value: '\n', consumed: 1)
+          ], consumed: 6),
+          Md2Html::Parser::SentenceNode.ends_early(words: [
+            create_node(type: 'TEXT', value: 'Bar', consumed: 1)
+          ], consumed: 3)
+        ],
+        consumed: 9
       )
     end
   end
@@ -234,13 +264,46 @@ describe Md2Html::Parser, "parser" do
     end
   end
 
-  it "body parser parse text that has dash character" do
-    parser = create_parser(:body_parser)
+  context "body parser" do
+    it "can parse text that has dash character" do
+      parser = create_parser(:body_parser)
 
-    tokens = tokenize("- foo")
-    paragraph_node = parser.match(tokens)
+      tokens = tokenize("- foo")
+      paragraph_node = parser.match(tokens)
 
-    expect(paragraph_node.consumed).to eq 3
+      expect(paragraph_node.consumed).to eq 3
+    end
+
+    it "can parse two paragraphs" do
+      parser = create_parser(:body_parser)
+
+      tokens = tokenize("**Foo**\n\nAnother para.")
+      body_node = parser.match(tokens)
+
+      expect(body_node).to eq_body_node(
+        create_body_node(
+          blocks:[
+            create_paragraph_node(
+              sentences: [
+                Md2Html::Parser::SentenceNode.ends_early(words: [
+                  create_node(type: 'BOLD', value: 'Foo', consumed: 5)
+                ], consumed: 7),
+              ],
+              consumed: 7
+            ),
+            create_paragraph_node(
+              sentences: [
+                create_sentence_node(words: [
+                  create_node(type: 'TEXT', value: 'Another para.', consumed: 1),
+                ], consumed: 1),
+              ],
+              consumed: 2
+            )
+          ],
+          consumed: 9
+        )
+      )
+    end
   end
 
   context "with parser chain" do
@@ -284,7 +347,7 @@ describe Md2Html::Parser, "parser" do
                   create_node(type: 'TEXT', value: ' and ', consumed: 1),
                   create_node(type: 'EMPHASIS', value: 'text', consumed: 3),
                   create_node(type: 'TEXT', value: '.', consumed: 1),
-                  create_node(type: 'NEWLINE', value: '\n', consumed: 2)
+                  create_node(type: 'NEWLINE', value: '\n', consumed: 1)
                 ], consumed: 12),
                 create_sentence_node(words: [
                   create_node(type: 'TEXT', value: 'Another para.', consumed: 1),
