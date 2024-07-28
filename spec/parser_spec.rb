@@ -234,13 +234,49 @@ describe Md2Html::Parser, "parser" do
     end
   end
 
-  it "body parser parse text that has dash character" do
-    parser = create_parser(:body_parser)
+  context "body parser" do
+    it "can parse text that has dash character" do
+      parser = create_parser(:body_parser)
 
-    tokens = tokenize("- foo")
-    paragraph_node = parser.match(tokens)
+      tokens = tokenize("- foo")
+      paragraph_node = parser.match(tokens)
 
-    expect(paragraph_node.consumed).to eq 3
+      expect(paragraph_node.consumed).to eq 3
+    end
+
+    fit "can parse two paragraphs" do
+      parser = create_parser(:body_parser)
+
+      tokens = tokenize("**Foo**\n\nAnother para.")
+      p tokens
+      body_node = parser.match(tokens)
+
+      expect(body_node).to eq_body_node(
+        create_body_node(
+          blocks:[
+            create_paragraph_node(
+              sentences: [
+                create_sentence_node(words: [
+                  create_node(type: 'BOLD', value: 'Foo', consumed: 5),
+                  create_node(type: 'NEWLINE', value: '\n', consumed: 2),
+                  create_node(type: 'NEWLINE', value: '\n', consumed: 2)
+                ], consumed: 9),
+              ],
+              consumed: 9
+            ),
+            create_paragraph_node(
+              sentences: [
+                create_sentence_node(words: [
+                  create_node(type: 'TEXT', value: 'Another para.', consumed: 1),
+                ], consumed: 1),
+              ],
+              consumed: 2
+            )
+          ],
+          consumed: 11
+        )
+      )
+    end
   end
 
   context "with parser chain" do
