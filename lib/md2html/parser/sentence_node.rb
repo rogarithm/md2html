@@ -1,11 +1,19 @@
 module Md2Html
   module Parser
     class SentenceNode
-      attr_reader :words, :consumed, :type
-      def initialize(words:, consumed:)
-        @words = words
-        @consumed  = consumed
-        @type = 'SENTENCE'
+      attr_reader :words, :consumed
+      attr_accessor :type
+
+      def initialize(options = {})
+        @words = options[:words]
+        @consumed  = options[:consumed]
+        @type = options[:type] || 'SENTENCE'
+      end
+
+      def self.ends_early(options = {})
+        sentence = SentenceNode.new(options)
+        sentence.type = 'SENTENCE_ENDS_EARLY'
+        sentence
       end
 
       def to_s

@@ -14,6 +14,14 @@ module Md2Html
           return Node.null
         end
 
+        ends_early = sentences.find_index {|s| s.type == 'SENTENCE_ENDS_EARLY'}
+        if ends_early != nil
+          return ParagraphNode.new(
+            sentences: sentences[0..ends_early],
+            consumed: sentences[0..ends_early].inject(0) {|new_consumed, sentence| new_consumed + sentence.consumed}
+          )
+        end
+
         ParagraphNode.new(sentences: sentences, consumed: consumed)
       end
     end

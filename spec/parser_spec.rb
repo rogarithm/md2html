@@ -177,6 +177,36 @@ describe Md2Html::Parser, "parser" do
         consumed: 22
       )
     end
+
+    it "can detect paragraph that ends early" do
+      parser = create_parser(:paragraph_parser)
+
+      tokens = tokenize("**Foo**\n\nAnother para.")
+      early_ends_1_sentence_para = parser.match(tokens)
+      expect(early_ends_1_sentence_para).to eq_paragraph_node create_paragraph_node(
+        sentences: [
+          Md2Html::Parser::SentenceNode.ends_early(words: [
+            create_node(type: 'BOLD', value: 'Foo', consumed: 5)
+          ], consumed: 7)
+        ],
+        consumed: 7
+      )
+
+      tokens_b = tokenize("**Foo**\nBar\n\nAnother para.")
+      early_ends_2_sentences_para = parser.match(tokens_b)
+      expect(early_ends_2_sentences_para).to eq_paragraph_node create_paragraph_node(
+        sentences: [
+          create_sentence_node(words: [
+            create_node(type: 'BOLD', value: 'Foo', consumed: 5),
+            create_node(type: 'NEWLINE', value: '\n', consumed: 1)
+          ], consumed: 6),
+          Md2Html::Parser::SentenceNode.ends_early(words: [
+            create_node(type: 'TEXT', value: 'Bar', consumed: 1)
+          ], consumed: 3)
+        ],
+        consumed: 9
+      )
+    end
   end
 
   it "heading parser parse text that has hash character" do
@@ -256,13 +286,11 @@ describe Md2Html::Parser, "parser" do
           blocks:[
             create_paragraph_node(
               sentences: [
-                create_sentence_node(words: [
-                  create_node(type: 'BOLD', value: 'Foo', consumed: 5),
-                  create_node(type: 'NEWLINE', value: '\n', consumed: 2),
-                  create_node(type: 'NEWLINE', value: '\n', consumed: 2)
-                ], consumed: 9),
+                Md2Html::Parser::SentenceNode.ends_early(words: [
+                  create_node(type: 'BOLD', value: 'Foo', consumed: 5)
+                ], consumed: 7),
               ],
-              consumed: 9
+              consumed: 7
             ),
             create_paragraph_node(
               sentences: [
@@ -273,7 +301,7 @@ describe Md2Html::Parser, "parser" do
               consumed: 2
             )
           ],
-          consumed: 11
+          consumed: 9
         )
       )
     end
