@@ -165,7 +165,7 @@ describe Md2Html::Parser, "parser" do
             create_node(type: 'TEXT', value: ' and ', consumed: 1),
             create_node(type: 'EMPHASIS', value: 'text', consumed: 3),
             create_node(type: 'TEXT', value: '.', consumed: 1),
-            create_node(type: 'NEWLINE', value: '\n', consumed: 2)
+            create_node(type: 'NEWLINE', value: '\n', consumed: 1)
           ], consumed: 12),
           create_sentence_node(words: [
             create_node(type: 'BOLD', value: 'Foo', consumed: 5),
@@ -348,7 +348,7 @@ describe Md2Html::Parser, "parser" do
                   create_node(type: 'TEXT', value: ' and ', consumed: 1),
                   create_node(type: 'EMPHASIS', value: 'text', consumed: 3),
                   create_node(type: 'TEXT', value: '.', consumed: 1),
-                  create_node(type: 'NEWLINE', value: '\n', consumed: 2)
+                  create_node(type: 'NEWLINE', value: '\n', consumed: 1)
                 ], consumed: 12),
                 create_sentence_node(words: [
                   create_node(type: 'TEXT', value: 'Another para.', consumed: 1),
