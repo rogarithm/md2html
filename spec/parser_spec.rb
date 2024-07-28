@@ -274,11 +274,10 @@ describe Md2Html::Parser, "parser" do
       expect(paragraph_node.consumed).to eq 3
     end
 
-    fit "can parse two paragraphs" do
+    it "can parse two paragraphs" do
       parser = create_parser(:body_parser)
 
       tokens = tokenize("**Foo**\n\nAnother para.")
-      p tokens
       body_node = parser.match(tokens)
 
       expect(body_node).to eq_body_node(
