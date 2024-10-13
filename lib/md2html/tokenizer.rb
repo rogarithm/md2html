@@ -18,7 +18,24 @@ module Md2Html
 
     def self.tokenize(plain_markdown)
       tokens_array = tokens_as_array(plain_markdown)
-      Tokenizer::TokenList.new(tokens_array)
+      merged_tokens = merge_chars2escape(tokens_array)
+      Tokenizer::TokenList.new(merged_tokens)
+    end
+
+    def self.merge_chars2escape(tokens_array)
+      merged_tokens = []
+      tokens_array.each.with_index do |token, idx|
+        if idx != 0 and tokens_array[idx - 1].type == 'ESCAPE'
+          next
+        end
+
+        if token.type == 'ESCAPE'
+          merged_tokens <<  Tokenizer::Token.new(type: 'TEXT', value: tokens_array[idx + 1].value)
+        else
+          merged_tokens << token
+        end
+      end
+      merged_tokens
     end
 
     private

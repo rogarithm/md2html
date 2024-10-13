@@ -150,9 +150,39 @@ describe Md2Html::Parser, "parser" do
       sentence_node = parser.match(token_nl_nl)
       expect(sentence_node).to eq_sentence_node create_sentence_node(words: expected_words, consumed: 13)
     end
+
+    it "can parse tokens that has escaped special char" do
+      parser = create_parser(:sentence_parser)
+      expected_words = [
+        create_node(type: 'TEXT', value: '-', consumed: 1),
+        create_node(type: 'TEXT', value: ' blah blah', consumed: 1)
+      ]
+
+      tokens = tokenize("\\- blah blah")
+      sentence_node = parser.match(tokens)
+      expect(sentence_node).to eq_sentence_node create_sentence_node(
+        words: expected_words, consumed: 3
+      )
+    end
   end
 
   context "paragraph parser" do
+    it "can parse tokens that has escaped special char" do
+      parser = create_parser(:block_parser)
+
+      tokens = tokenize("\\- blah blah")
+      paragraph_node = parser.match(tokens)
+      expect(paragraph_node).to eq_paragraph_node create_paragraph_node(
+        sentences: [
+          create_sentence_node(words: [
+            create_node(type: 'TEXT', value: '-', consumed: 1),
+            create_node(type: 'TEXT', value: ' blah blah', consumed: 1)
+          ], consumed: 3)
+        ],
+        consumed: 3
+      )
+    end
+
     it "can parse paragraph" do
       parser = create_parser(:paragraph_parser)
 
