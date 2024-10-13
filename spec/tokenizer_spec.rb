@@ -11,6 +11,14 @@ def tokenize plain_text
   Md2Html::Tokenizer::tokenize plain_text
 end
 
+def tokens_as_array plain_text
+  Md2Html::Tokenizer::tokens_as_array plain_text
+end
+
+def merge_chars2escape plain_text
+  Md2Html::Tokenizer::merge_chars2escape plain_text
+end
+
 def create_token attrs
   Md2Html::Tokenizer::Token.new attrs
 end
@@ -100,5 +108,22 @@ And this is another para.")
       create_token(type: 'TEXT', value: ' heading level 2'),
       create_token(type: 'EOF', value: '')
     ]))
+  end
+
+  it "can make token of non-special char when backslash exists before the char" do
+    all_token_list = []
+    ['\-', '\#', '\_', '\*'].each {|s| all_token_list << tokens_as_array(s)}
+
+    expect(all_token_list[0].map {|t| t.type}).to eq ['ESCAPE', 'DASH', 'EOF']
+    expect(all_token_list[1].map {|t| t.type}).to eq ['ESCAPE', 'HASH', 'EOF']
+    expect(all_token_list[2].map {|t| t.type}).to eq ['ESCAPE', 'UNDERSCORE', 'EOF']
+    expect(all_token_list[3].map {|t| t.type}).to eq ['ESCAPE', 'STAR', 'EOF']
+  end
+
+  it "tokens_as_array() merges escape char and trailing special char" do
+    token_list = ('\-')
+    taa = tokens_as_array token_list
+    res = merge_chars2escape taa
+    expect(res[0].type).to eq 'TEXT'
   end
 end

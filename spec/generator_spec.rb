@@ -35,7 +35,7 @@ describe Md2Html::Generator do
 </p>\n"
   end
 
-  fit "generates html from two paragraph" do
+  it "generates html from two paragraph" do
     expect(generate("__Foo__ and *text*.\n\nAnother para.")).to eq "<p>
   <strong>Foo</strong> and <em>text</em>.
 </p>
