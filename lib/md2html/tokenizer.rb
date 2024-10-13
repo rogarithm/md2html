@@ -25,11 +25,11 @@ module Md2Html
 
     def self.tokens_as_array(plain_markdown)
       if plain_markdown.nil? || plain_markdown == ''
-        [Tokenizer::Token.end_of_file]
-      else
-        token = scan_one_token(plain_markdown)
-        [token] + tokens_as_array(plain_markdown[token.length..-1])
+        return [Tokenizer::Token.end_of_file]
       end
+
+      token = scan_one_token(plain_markdown)
+      [token] + tokens_as_array(plain_markdown[token.length..-1])
     end
 
     def self.scan_one_token(plain_markdown)

@@ -24,12 +24,13 @@ describe Md2Html::Tokenizer::TokenList do
     expect(token_list.peek_or(%w(UNDERSCORE TEXT UNDERSCORE), %w(TEXT))).to eq true
   end
 
-  it "peek_or() dash" do
-    token_list = Md2Html::Tokenizer::tokenize('-')
-    expect(token_list.peek_or(%w(DASH))).to eq true
+  it "peek_or() returns true when given token types match in order, and only part of it" do
+    token_list = Md2Html::Tokenizer::tokenize('_Foo_')
+    expect(token_list.peek_or(%w(TEXT))).to eq false
+    expect(token_list.peek_or(%w(UNDERSCORE TEXT))).to eq true
   end
 
-  it "peek_from() needs token position to check" do
+  it "peek_from() specifies the position of token to match" do
     token_list = Md2Html::Tokenizer::tokenize('_Foo_')
     expect(token_list.peek_from(1, 'TEXT')).to eq true
     expect(token_list.peek_from(2, 'UNDERSCORE')).to eq true
@@ -51,14 +52,14 @@ describe Md2Html::Tokenizer::TokenList do
 
   it "grab raise error when token count exceeds total token count" do
     token_list = Md2Html::Tokenizer::tokenize('_Foo_')
-    expect { token_list.grab!(5) }.to raise_error(RuntimeError) # _Foo_ has 5 tokens, the last of which is EOF.
+    expect { token_list.grab!(5) }.to raise_error(RuntimeError) # _Foo_ has 4 tokens, the last of which is EOF.
   end
 
   it "offset() returns new tokenlist starts from nth token" do
     token_list = Md2Html::Tokenizer::tokenize('_Foo_')
-    n = 1
-    expect(token_list.offset(n).tokens[0].value).to eq 'Foo'
-    expect(token_list.offset(n).tokens[1].value).to eq '_'
-    expect(token_list.offset(n).tokens[2].value).to eq ''
+    offset_from_1th = token_list.offset(1)
+    expect(offset_from_1th.tokens[0].value).to eq 'Foo'
+    expect(offset_from_1th.tokens[1].value).to eq '_'
+    expect(offset_from_1th.tokens[2].value).to eq ''
   end
 end
