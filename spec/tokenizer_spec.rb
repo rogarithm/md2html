@@ -101,4 +101,14 @@ And this is another para.")
       create_token(type: 'EOF', value: '')
     ]))
   end
+
+  it "can make token of non-special char when backslash exists before the char" do
+    all_token_list = []
+    ['\-', '\#', '\_', '\*'].each {|s| all_token_list << tokenize(s)}
+
+    expect(all_token_list[0].peek_or(%w(ESCAPE DASH))).to eq true
+    expect(all_token_list[1].peek_or(%w(ESCAPE HASH))).to eq true
+    expect(all_token_list[2].peek_or(%w(ESCAPE UNDERSCORE))).to eq true
+    expect(all_token_list[3].peek_or(%w(ESCAPE STAR))).to eq true
+  end
 end

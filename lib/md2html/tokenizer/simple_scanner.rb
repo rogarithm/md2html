@@ -14,7 +14,8 @@ module Md2Html
         '-'  => 'DASH',
         '*'  => 'STAR',
         "\n" => 'NEWLINE',
-        '#'  => 'HASH'
+        '#'  => 'HASH',
+        "\\" => 'ESCAPE'
       }.freeze
 
       def self.from_string(plain_markdown)
