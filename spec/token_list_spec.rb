@@ -38,16 +38,18 @@ describe Md2Html::Tokenizer::TokenList do
 
   it "can put over 1 token to peek_from()" do
     token_list = Md2Html::Tokenizer::tokenize('_Foo_')
-    expect(token_list.peek_from(1, 'TEXT', 'UNDERSCORE')).to eq true
+    expect(
+      token_list.peek_from(1, 'TEXT', 'UNDERSCORE')
+    ).to eq true
   end
 
   it "grab() picks tokens of smaller count than total token count" do
     token_list = Md2Html::Tokenizer::tokenize('_Foo_')
-    grabbed = token_list.grab!(2)
-    expect(grabbed[0].type).to eq 'UNDERSCORE'
-    expect(grabbed[0].value).to eq '_'
-    expect(grabbed[1].type).to eq 'TEXT'
-    expect(grabbed[1].value).to eq 'Foo'
+    expect(
+      token_list.grab!(2).collect {|x| [x.type, x.value]}
+    ).to eq(
+      [['UNDERSCORE', '_'], ['TEXT', 'Foo']]
+    )
   end
 
   it "grab raise error when token count exceeds total token count" do
@@ -57,9 +59,8 @@ describe Md2Html::Tokenizer::TokenList do
 
   it "offset() returns new tokenlist starts from nth token" do
     token_list = Md2Html::Tokenizer::tokenize('_Foo_')
-    offset_from_1th = token_list.offset(1)
-    expect(offset_from_1th.tokens[0].value).to eq 'Foo'
-    expect(offset_from_1th.tokens[1].value).to eq '_'
-    expect(offset_from_1th.tokens[2].value).to eq ''
+    expect(token_list.offset(1).collect {|x| [x.value]}.flatten!).to eq(
+      ['Foo', '_', '']
+    )
   end
 end
