@@ -35,21 +35,17 @@ describe Md2Html::Tokenizer do
   it "tokenize text" do
     tokens = tokenize('Hi')
 
-    expect(tokens).to eq_token_list(create_token_list(
-      [create_token(type: 'TEXT', value: 'Hi'),
-       create_eof_token]
-    ))
+    expect(tokens.collect {|x| [x.type, x.value]}).to eq(
+      [['TEXT', 'Hi'], ['EOF', '']]
+    )
   end
 
   it "tokenize text with underscores" do
     tokens = tokenize('_Foo_')
 
-    expect(tokens).to eq_token_list(create_token_list(
-      [create_token(type: 'UNDERSCORE', value: '_'),
-       create_token(type: 'TEXT', value: 'Foo'),
-       create_token(type: 'UNDERSCORE', value: '_'),
-       create_eof_token]
-    ))
+    expect(tokens.collect {|x| [x.type, x.value]}).to eq(
+      [['UNDERSCORE', '_'], ['TEXT', 'Foo'], ['UNDERSCORE', '_'], ['EOF', '']]
+    )
   end
 
   it "tokenize paragraph" do
@@ -58,72 +54,60 @@ This is a _quite_ **long** text for what we've been testing so far.
 
 And this is another para.")
 
-    expect(tokens).to eq_token_list(create_token_list([
-      create_token(type: 'TEXT', value: 'Hello, World!'),
-      create_token(type: 'NEWLINE', value: "\n"),
-      create_token(type: 'TEXT', value: 'This is a '),
-      create_token(type: 'UNDERSCORE', value: '_'),
-      create_token(type: 'TEXT', value: 'quite'),
-      create_token(type: 'UNDERSCORE', value: '_'),
-      create_token(type: 'TEXT', value: ' '),
-      create_token(type: 'STAR', value: '*'),
-      create_token(type: 'STAR', value: '*'),
-      create_token(type: 'TEXT', value: 'long'),
-      create_token(type: 'STAR', value: '*'),
-      create_token(type: 'STAR', value: '*'),
-      create_token(type: 'TEXT', value: ' text for what we\'ve been testing so far.'),
-      create_token(type: 'NEWLINE', value: "\n"),
-      create_token(type: 'NEWLINE', value: "\n"),
-      create_token(type: 'TEXT', value: 'And this is another para.'),
-      create_eof_token
-    ]))
+    expect(tokens.collect { |x| [x.type, x.value] }).to eq([
+      ['TEXT', 'Hello, World!'], ['NEWLINE', "\n"],
+      ['TEXT', 'This is a '], ['UNDERSCORE', '_'], ['TEXT', 'quite'],
+      ['UNDERSCORE', '_'], ['TEXT', ' '], ['STAR', '*'], ['STAR', '*'],
+      ['TEXT', 'long'], ['STAR', '*'], ['STAR', '*'],
+      ['TEXT', ' text for what we\'ve been testing so far.'],
+      ['NEWLINE', "\n"], ['NEWLINE', "\n"], ['TEXT', 'And this is another para.'],
+      ['EOF', '']
+    ])
   end
 
   it "tokenize text with dash" do
     tokens = tokenize('- first item')
 
-    expect(tokens).to eq_token_list(create_token_list([
-      create_token(type: 'DASH', value: '-'),
-      create_token(type: 'TEXT', value: ' first item'),
-      create_eof_token
-    ]))
+    expect(tokens.collect {|x| [x.type, x.value]}).to eq(
+      [['DASH', '-'], ['TEXT', ' first item'], ['EOF', '']]
+    )
   end
 
   it "can make token of hash character" do
     tokens = tokenize('# heading level 1')
 
-    expect(tokens).to eq_token_list(create_token_list([
-      create_token(type: 'HASH', value: '#'),
-      create_token(type: 'TEXT', value: ' heading level 1'),
-      create_token(type: 'EOF', value: '')
-    ]))
+    expect(tokens.collect {|x| [x.type, x.value]}).to eq([
+      ['HASH', '#'], ['TEXT', ' heading level 1'], ['EOF', '']
+    ])
   end
 
   it "can make token of multiple hash character" do
     tokens = tokenize('## heading level 2')
 
-    expect(tokens).to eq_token_list(create_token_list([
-      create_token(type: 'HASH', value: '#'),
-      create_token(type: 'HASH', value: '#'),
-      create_token(type: 'TEXT', value: ' heading level 2'),
-      create_token(type: 'EOF', value: '')
-    ]))
+    expect(tokens.collect {|x| [x.type, x.value]}).to eq([
+      ['HASH', '#'], ['HASH', '#'], ['TEXT', ' heading level 2'], ['EOF', '']
+    ])
   end
 
   it "can make token of non-special char when backslash exists before the char" do
-    all_token_list = []
-    ['\-', '\#', '\_', '\*'].each {|s| all_token_list << tokens_as_array(s)}
-
-    expect(all_token_list[0].map {|t| t.type}).to eq ['ESCAPE', 'DASH', 'EOF']
-    expect(all_token_list[1].map {|t| t.type}).to eq ['ESCAPE', 'HASH', 'EOF']
-    expect(all_token_list[2].map {|t| t.type}).to eq ['ESCAPE', 'UNDERSCORE', 'EOF']
-    expect(all_token_list[3].map {|t| t.type}).to eq ['ESCAPE', 'STAR', 'EOF']
+    token_lists = ['\-', '\#', '\_', '\*'].collect{|w| tokens_as_array(w)}
+    expect(token_lists.collect {|x| x.collect {|x| [x.type, x.value]}}).to eq(
+      [
+        [["ESCAPE", "\\"], ["DASH", "-"], ["EOF", ""]],
+        [["ESCAPE", "\\"], ["HASH", "#"], ["EOF", ""]],
+        [["ESCAPE", "\\"], ["UNDERSCORE", "_"], ["EOF", ""]],
+        [["ESCAPE", "\\"], ["STAR", "*"], ["EOF", ""]]
+      ]
+    )
   end
 
   it "tokens_as_array() merges escape char and trailing special char" do
-    token_list = ('\-')
-    taa = tokens_as_array token_list
-    res = merge_chars2escape taa
-    expect(res[0].type).to eq 'TEXT'
+    token_list = tokens_as_array('\-')
+
+    expect(
+      merge_chars2escape(token_list).collect {|x| [x.type, x.value]}
+    ).to eq(
+      [["TEXT", "-"], ["EOF", ""]]
+    )
   end
 end
