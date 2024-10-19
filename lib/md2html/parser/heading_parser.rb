@@ -1,6 +1,6 @@
 require_relative 'base_parser'
 require_relative "matches_first"
-require_relative 'node'
+require_relative 'heading_node'
 
 module Md2Html
   module Parser
@@ -23,16 +23,20 @@ module Md2Html
           node_type += '_LEVEL2'
         end
 
+        single_sentence = [
+          SentenceNode.new({
+            words: [Node.new(type: 'TEXT', value: left.first.value, consumed: 1)],
+            consumed: 1
+          })
+        ]
         if left.peek_or(%w(TEXT NEWLINE NEWLINE)) == true
-          Node.new(type: node_type, value: left.first.value, consumed: 3 + hash_count)
+          HeadingNode.new(type: node_type, sentences: single_sentence, consumed: 3 + hash_count)
         elsif left.peek_or(%w(TEXT NEWLINE EOF)) == true
-          Node.new(type: node_type, value: left.first.value, consumed: 3 + hash_count)
+          HeadingNode.new(type: node_type, sentences: single_sentence, consumed: 3 + hash_count)
         elsif left.peek_or(%w(TEXT NEWLINE)) == true
-          Node.new(type: node_type, value: left.first.value, consumed: 2 + hash_count)
+          HeadingNode.new(type: node_type, sentences: single_sentence, consumed: 2 + hash_count)
         end
       end
     end
   end
 end
-
-

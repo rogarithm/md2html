@@ -331,10 +331,15 @@ describe Md2Html::Parser, "parser" do
     parser = create_parser(:heading_parser)
 
     tokens = tokenize("# title\n")
-    node = [parser.match(tokens)].collect {|w| [w.type, w.value, w.consumed]}
+
+    node = [parser.match(tokens)].collect {|w| [
+      w.type,
+      w.sentences.first.words.collect {|w| w.value },
+      w.consumed
+    ]}
 
     expect(node).to eq(
-      [['HEADING', ' title', 4]]
+      [['HEADING', [' title'], 4]]
     )
   end
 
@@ -352,10 +357,14 @@ describe Md2Html::Parser, "parser" do
       parser = create_parser(:block_parser)
 
       tokens = tokenize("# title\n")
-      node = [parser.match(tokens)].collect { |hd| [hd.type, hd.value, hd.consumed] }
+      node = [parser.match(tokens)].collect do |hd| [
+        hd.type,
+        hd.sentences.first.words.collect {|w| w.value},
+        hd.consumed
+      ] end
 
       expect(node).to eq(
-        [['HEADING', ' title', 4]]
+        [['HEADING', [' title'], 4]]
       )
     end
   end
@@ -364,20 +373,28 @@ describe Md2Html::Parser, "parser" do
     it "can parse text that has heading" do
       parser = create_parser(:heading_parser)
       tokens = tokenize("# title\n")
-      node = [parser.match(tokens)].collect { |hd| [hd.type, hd.value, hd.consumed] }
+      node = [parser.match(tokens)].collect do |hd| [
+        hd.type,
+        hd.sentences.first.words.collect {|w| w.value},
+        hd.consumed
+      ] end
 
       expect(node).to eq(
-        [['HEADING', ' title',4]]
+        [['HEADING', [' title'],4]]
       )
     end
 
     it "can parse text that has level 2 heading" do
       parser = create_parser(:heading_parser)
       tokens = tokenize("## title\n")
-      node = [parser.match(tokens)].collect { |hd| [hd.type, hd.value, hd.consumed] }
+      node = [parser.match(tokens)].collect do |hd| [
+        hd.type,
+        hd.sentences.first.words.collect {|w| w.value},
+        hd.consumed
+      ] end
 
       expect(node).to eq(
-        [['HEADING_LEVEL2', ' title', 5]]
+        [['HEADING_LEVEL2', [' title'], 5]]
       )
     end
   end
@@ -502,21 +519,31 @@ describe Md2Html::Parser, "parser" do
     it "can parse text that has heading" do
       tokens = tokenize("# title\n")
       node = [parse(tokens)].collect do |body| [
-        body.blocks.collect { |n| [n.type, n.value, n.consumed] }.first,
+        body.blocks.collect do |n| [
+          n.type,
+          n.sentences.first.words.collect {|w| w.value},
+          n.consumed
+        ]
+        end.first,
         body.consumed
       ] end.first
 
-      expect(node).to eq([["HEADING", " title", 4], 4])
+      expect(node).to eq([["HEADING", [" title"], 4], 4])
     end
 
     it "can parse text that has level 2 heading" do
       tokens = tokenize("## title\n")
       node = [parse(tokens)].collect do |body| [
-        body.blocks.collect { |n| [n.type, n.value, n.consumed] }.first,
+        body.blocks.collect do |n| [
+          n.type,
+          n.sentences.first.words.collect {|w| w.value},
+          n.consumed
+        ]
+        end.first,
         body.consumed
       ] end.first
 
-      expect(node).to eq([["HEADING_LEVEL2", " title", 5], 5])
+      expect(node).to eq([["HEADING_LEVEL2", [" title"], 5], 5])
     end
 
     it "can parse text that has heading and another" do
