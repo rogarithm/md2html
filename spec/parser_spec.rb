@@ -87,10 +87,14 @@ describe Md2Html::Parser, "parser" do
       list_nl_eof_token = tokenize("- foo\n")
       expect([parser.match(list_nl_eof_token)].collect{|x| [
         x.type,
-        x.sentences.collect{|s| [s.type, s.value, s.consumed]}.first,
+        x.sentences.collect{|s| [
+          s.type,
+          s.words.collect{|w| [w.type, w.value, w.consumed]}.first,
+          s.consumed
+        ]}.first,
         x.consumed
       ]}.first).to eq(
-        ["LIST", ["LIST_ITEM", " foo", 3], 4]
+        ["LIST", ["LIST_ITEM", ['TEXT', " foo", 1], 3], 4]
       )
     end
 
@@ -100,10 +104,14 @@ describe Md2Html::Parser, "parser" do
       list_nl_nl_eof_token = tokenize("- foo\n\n")
       expect([parser.match(list_nl_nl_eof_token)].collect{|x| [
         x.type,
-        x.sentences.collect{|s| [s.type, s.value, s.consumed]}.first,
+        x.sentences.collect{|s| [
+          s.type,
+          s.words.collect{|w| [w.type, w.value, w.consumed]}.first,
+          s.consumed
+        ]},
         x.consumed
       ]}.first).to eq(
-        ["LIST", ["LIST_ITEM", " foo", 3], 5]
+        ["LIST", [["LIST_ITEM", ['TEXT', " foo", 1], 3]], 5]
       )
     end
 
@@ -113,10 +121,14 @@ describe Md2Html::Parser, "parser" do
       list_nl_list_nl_eof_token = tokenize("- foo\n- bar\n")
       expect([parser.match(list_nl_list_nl_eof_token)].collect{|x| [
         x.type,
-        x.sentences.collect{|s| [s.type, s.value, s.consumed]},
+        x.sentences.collect{|s| [
+          s.type,
+          s.words.collect{|w| [w.type, w.value, w.consumed]}.first,
+          s.consumed
+        ]},
         x.consumed
       ]}.first).to eq(
-        ["LIST", [["LIST_ITEM", " foo", 3], ["LIST_ITEM", " bar", 3]], 7]
+        ["LIST", [["LIST_ITEM", ['TEXT', " foo", 1], 3], ["LIST_ITEM", ['TEXT', " bar", 1], 3]], 7]
       )
     end
   end
