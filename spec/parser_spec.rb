@@ -87,10 +87,10 @@ describe Md2Html::Parser, "parser" do
       list_nl_eof_token = tokenize("- foo\n")
       expect([parser.match(list_nl_eof_token)].collect{|x| [
         x.type,
-        x.sentences.collect{|s| [s.type, s.value, s.consumed]},
+        x.sentences.collect{|s| [s.type, s.value, s.consumed]}.first,
         x.consumed
       ]}.first).to eq(
-        ["LIST", [["LIST_ITEM", " foo", 3]], 4]
+        ["LIST", ["LIST_ITEM", " foo", 3], 4]
       )
     end
 
@@ -100,10 +100,10 @@ describe Md2Html::Parser, "parser" do
       list_nl_nl_eof_token = tokenize("- foo\n\n")
       expect([parser.match(list_nl_nl_eof_token)].collect{|x| [
         x.type,
-        x.sentences.collect{|s| [s.type, s.value, s.consumed]},
+        x.sentences.collect{|s| [s.type, s.value, s.consumed]}.first,
         x.consumed
       ]}.first).to eq(
-        ["LIST", [["LIST_ITEM", " foo", 3]], 5]
+        ["LIST", ["LIST_ITEM", " foo", 3], 5]
       )
     end
 
@@ -224,16 +224,16 @@ describe Md2Html::Parser, "parser" do
             s.words.collect{|w| [w.type, w.value, w.consumed]},
             s.consumed
           ]
-        end,
+        end.first,
         x.consumed
       ]}.first).to eq(
         [
           "PARAGRAPH",
-          [[
+          [
             "SENTENCE",
             [["TEXT", "-", 1], ["TEXT", " blah blah", 1]],
             3
-          ]],
+          ],
           3
         ]
       )
@@ -254,17 +254,22 @@ describe Md2Html::Parser, "parser" do
         x.consumed
       ]}.first
 
+      words_1 = [
+        ['BOLD', 'Foo', 5], ['TEXT', ' and ', 1], ['EMPHASIS', 'text', 3],
+        ['TEXT', '.', 1], ['NEWLINE', '\n', 1]
+      ]
+      words_2 = [
+        ['BOLD', 'Foo', 5], ['TEXT', ' and ', 1], ['EMPHASIS', 'text', 3],
+        ['TEXT', '.', 1]
+      ]
+
       expect(paragraph_node).to eq(
         [
           "PARAGRAPH",
-          [["SENTENCE",
-            [['BOLD', 'Foo', 5], ['TEXT', ' and ', 1], ['EMPHASIS', 'text', 3],
-              ['TEXT', '.', 1], ['NEWLINE', '\n', 1]],
-            11],
-            ["SENTENCE",
-              [['BOLD', 'Foo', 5], ['TEXT', ' and ', 1], ['EMPHASIS', 'text', 3],
-                ['TEXT', '.', 1]],
-              11]],
+          [
+            ["SENTENCE", words_1, 11],
+            ["SENTENCE", words_2, 11]
+          ],
           22
         ]
       )
@@ -281,18 +286,18 @@ describe Md2Html::Parser, "parser" do
           s.words.collect{|w| [w.type, w.value, w.consumed]},
           s.consumed
         ]
-        end,
+        end.first,
         x.consumed
       ]}.first
 
       expect(early_ends_1_sentence_para).to eq(
         [
           "PARAGRAPH",
-          [[
+          [
             "SENTENCE_ENDS_EARLY",
             [["BOLD", "Foo", 5]],
             7
-          ]],
+          ],
           7
         ]
       )
