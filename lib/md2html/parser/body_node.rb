@@ -1,8 +1,9 @@
 module Md2Html
   module Parser
     class BodyNode
-      attr_reader :blocks, :consumed
+      attr_reader :type, :blocks, :consumed
       def initialize(blocks:, consumed:)
+        @type = 'BODY'
         @blocks = blocks
         @consumed  = consumed
       end

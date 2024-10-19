@@ -1,11 +1,11 @@
 module Md2Html
   module Parser
     class ListNode
-      attr_reader :sentences, :consumed, :type
+      attr_reader :type, :sentences, :consumed
       def initialize(sentences:, consumed:)
+        @type = 'LIST'
         @sentences = sentences
         @consumed  = consumed
-        @type = 'LIST'
       end
 
       def to_s

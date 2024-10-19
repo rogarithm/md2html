@@ -1,11 +1,11 @@
 module Md2Html
   module Parser
     class ParagraphNode
-      attr_reader :sentences, :consumed, :type
+      attr_reader :type, :sentences, :consumed
       def initialize(sentences:, consumed:)
+        @type = 'PARAGRAPH'
         @sentences = sentences
         @consumed  = consumed
-        @type = 'PARAGRAPH'
       end
 
       def to_s
