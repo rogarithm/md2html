@@ -5,9 +5,9 @@ module Md2Html
       attr_accessor :type
 
       def initialize(options = {})
+        @type = options[:type] || 'SENTENCE'
         @words = options[:words]
         @consumed  = options[:consumed]
-        @type = options[:type] || 'SENTENCE'
       end
 
       def self.ends_early(options = {})

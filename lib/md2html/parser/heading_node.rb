@@ -1,16 +1,16 @@
 module Md2Html
   module Parser
-    class ParagraphNode
+    class HeadingNode
       attr_reader :type, :sentences, :consumed
-      def initialize(sentences:, consumed:)
-        @type = 'PARAGRAPH'
+      def initialize(type:, sentences:, consumed:)
+        @type = type
         @sentences = sentences
         @consumed  = consumed
       end
 
       def to_s
         if self.sentences.size < 1
-          return 'EMPTY PARAGRAPH'
+          return 'EMPTY HEADING'
         end
         result = "#{self.type}:#{self.consumed}\n"
         self.sentences.each do |sentence|

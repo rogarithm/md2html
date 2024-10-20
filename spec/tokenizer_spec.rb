@@ -19,18 +19,6 @@ def merge_chars2escape plain_text
   Md2Html::Tokenizer::merge_chars2escape plain_text
 end
 
-def create_token attrs
-  Md2Html::Tokenizer::Token.new attrs
-end
-
-def create_eof_token
-  Md2Html::Tokenizer::Token.end_of_file
-end
-
-def create_token_list tokens
-  Md2Html::Tokenizer::TokenList.new tokens
-end
-
 describe Md2Html::Tokenizer do
   it "tokenize text" do
     tokens = tokenize('Hi')
