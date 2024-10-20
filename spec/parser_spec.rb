@@ -19,26 +19,6 @@ def create_parser name
   Md2Html::Parser::ParserFactory.build(name)
 end
 
-def create_node attrs
-  Md2Html::Parser::Node.new attrs
-end
-
-def create_sentence_node attrs
-  Md2Html::Parser::SentenceNode.new attrs
-end
-
-def create_paragraph_node attrs
-  Md2Html::Parser::ParagraphNode.new attrs
-end
-
-def create_list_node attrs
-  Md2Html::Parser::ListNode.new attrs
-end
-
-def create_body_node attrs
-  Md2Html::Parser::BodyNode.new attrs
-end
-
 def parse tokens
   Md2Html::Parser::parse tokens
 end
