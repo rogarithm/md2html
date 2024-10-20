@@ -87,11 +87,14 @@ describe Md2Html::Parser, "parser" do
       list_nl_eof_token = tokenize("- foo\n")
       expect([parser.match(list_nl_eof_token)].collect{|x| [
         x.type,
-        x.sentences.collect{|s| [
-          s.type,
-          s.words.collect{|w| [w.type, w.value, w.consumed]}.first,
-          s.consumed
-        ]}.first,
+        x.sentences.collect{|s|
+          w = s.words.first
+          [
+            s.type,
+            [w.type, w.value, w.consumed],
+            s.consumed
+          ]
+        }.first,
         x.consumed
       ]}.first).to eq(
         ["LIST", ["LIST_ITEM", ['TEXT', " foo", 1], 3], 4]
@@ -104,11 +107,14 @@ describe Md2Html::Parser, "parser" do
       list_nl_nl_eof_token = tokenize("- foo\n\n")
       expect([parser.match(list_nl_nl_eof_token)].collect{|x| [
         x.type,
-        x.sentences.collect{|s| [
-          s.type,
-          s.words.collect{|w| [w.type, w.value, w.consumed]}.first,
-          s.consumed
-        ]},
+        x.sentences.collect{|s|
+          w = s.words.first
+          [
+            s.type,
+            [w.type, w.value, w.consumed],
+            s.consumed
+          ]
+        },
         x.consumed
       ]}.first).to eq(
         ["LIST", [["LIST_ITEM", ['TEXT', " foo", 1], 3]], 5]
@@ -121,11 +127,14 @@ describe Md2Html::Parser, "parser" do
       list_nl_list_nl_eof_token = tokenize("- foo\n- bar\n")
       expect([parser.match(list_nl_list_nl_eof_token)].collect{|x| [
         x.type,
-        x.sentences.collect{|s| [
-          s.type,
-          s.words.collect{|w| [w.type, w.value, w.consumed]}.first,
-          s.consumed
-        ]},
+        x.sentences.collect{|s|
+          w = s.words.first
+          [
+            s.type,
+            [w.type, w.value, w.consumed],
+            s.consumed
+          ]
+        },
         x.consumed
       ]}.first).to eq(
         ["LIST", [["LIST_ITEM", ['TEXT', " foo", 1], 3], ["LIST_ITEM", ['TEXT', " bar", 1], 3]], 7]
@@ -293,9 +302,11 @@ describe Md2Html::Parser, "parser" do
       tokens = tokenize("**Foo**\n\nAnother para.")
       early_ends_1_sentence_para = [parser.match(tokens)].collect{|x| [
         x.type,
-        x.sentences.collect do |s| [
+        x.sentences.collect do |s|
+          w = s.words.first
+          [
           s.type,
-          s.words.collect{|w| [w.type, w.value, w.consumed]},
+          [w.type, w.value, w.consumed],
           s.consumed
         ]
         end.first,
@@ -307,7 +318,7 @@ describe Md2Html::Parser, "parser" do
           "PARAGRAPH",
           [
             "SENTENCE_ENDS_EARLY",
-            [["BOLD", "Foo", 5]],
+            ["BOLD", "Foo", 5],
             7
           ],
           7
@@ -428,11 +439,14 @@ describe Md2Html::Parser, "parser" do
       body_node = [parser.match(tokens)].collect { |b| [
         b.blocks.collect { |p| [
           p.type,
-          p.sentences.collect { |s| [
-            s.type,
-            s.words.collect { |w| [w.type, w.value, w.consumed] },
-            s.consumed
-          ] }.first,
+          p.sentences.collect { |s|
+            w = s.words.first
+            [
+              s.type,
+              [w.type, w.value, w.consumed],
+              s.consumed
+            ]
+          }.first,
           p.consumed
         ] },
         b.consumed
@@ -442,11 +456,11 @@ describe Md2Html::Parser, "parser" do
         [
           [[
             "PARAGRAPH",
-            ["SENTENCE_ENDS_EARLY", [["BOLD", "Foo", 5]], 7],
+            ["SENTENCE_ENDS_EARLY", ["BOLD", "Foo", 5], 7],
             7
           ], [
             "PARAGRAPH",
-            ["SENTENCE", [["TEXT", "Another para.", 1]], 2],
+            ["SENTENCE", ["TEXT", "Another para.", 1], 2],
             2
           ]],
           9
@@ -477,54 +491,44 @@ describe Md2Html::Parser, "parser" do
     it "can parse plain paragraph and list items of the same level" do
       tokens = tokenize("- foo\n- bar\n- baz\n\n__Foo__ and *text*.\nAnother para.")
 
-      # TODO
-      #  list_items_parser가 sentence_parser로 sentence 필드를
-      #  sentence_node로 바꾸게 한 뒤에 다시 시도해보기
-      # xs = [parse(tokens)].collect do |bd| [
-      #   bd.blocks.collect do |block|
-      #     [
-      #       block.type,
-      #       block.sentences.collect do |sentence|
-      #         [sentence.type, sentence.words, sentence.consumed]
-      #       end,
-      #       block.consumed
-      #     ]
-      #   end,
-      #   bd.consumed
-      # ] end.first
-      # p xs
+      node = [parse(tokens)].collect do |body| [
+        body.type,
+        body.blocks.collect do |block|
+          [
+            block.type,
+            block.sentences.collect do |sentence|
+              word = sentence.words.first
+              [
+                sentence.type,
+                [word.type, word.value, word.consumed],
+                sentence.consumed
+              ]
+            end,
+            block.consumed
+          ]
+        end,
+        body.consumed
+      ] end.first
 
-      nodes = parse(tokens)
-
-      expect(nodes).to eq_body_node(
-        create_body_node(
-          blocks:[
-            create_list_node(
-              sentences: [
-                create_node(type: 'LIST_ITEM', value: ' foo', consumed: 3),
-                create_node(type: 'LIST_ITEM', value: ' bar', consumed: 3),
-                create_node(type: 'LIST_ITEM', value: ' baz', consumed: 3),
+      expect(node).to eq(
+        ['BODY',
+          [
+            ["LIST",
+              [
+                ["LIST_ITEM", ["TEXT", " foo", 1], 3],
+                ["LIST_ITEM", ["TEXT", " bar", 1], 3],
+                ["LIST_ITEM", ["TEXT", " baz", 1], 3]
               ],
-              consumed: 10
-            ),
-            create_paragraph_node(
-              sentences: [
-                create_sentence_node(words: [
-                  create_node(type: 'BOLD', value: 'Foo', consumed: 5),
-                  create_node(type: 'TEXT', value: ' and ', consumed: 1),
-                  create_node(type: 'EMPHASIS', value: 'text', consumed: 3),
-                  create_node(type: 'TEXT', value: '.', consumed: 1),
-                  create_node(type: 'NEWLINE', value: '\n', consumed: 1)
-                ], consumed: 12),
-                create_sentence_node(words: [
-                  create_node(type: 'TEXT', value: 'Another para.', consumed: 1),
-                ], consumed: 1),
+              10],
+            ["PARAGRAPH",
+              [
+                ["SENTENCE", ["BOLD", "Foo", 5], 11],
+                ["SENTENCE", ["TEXT", "Another para.", 1], 2]
               ],
-              consumed: 13
-            )
+              13]
           ],
-          consumed: 23
-        )
+          23
+        ]
       )
     end
 
@@ -561,55 +565,84 @@ describe Md2Html::Parser, "parser" do
     it "can parse text that has heading and another" do
       tokens = tokenize("# title\n\nand another blocks")
 
-      # TODO
-      #  duck typing을 간단하게 하려면 heading_parser가 node 말고 어떤 type의 node를 반환해야할까?
-      # xs = [parse(tokens)].collect do |body|
-      #   [
-      #     body.blocks,
-      #     body.consumed
-      #   ]
-      # end
-      # p xs
-
-      node = parse(tokens)
-
-      expect(node).to eq_body_node(
-        create_body_node(
-          blocks: [
-            create_node(type: 'HEADING', value: ' title', consumed: 4),
-            create_paragraph_node(
-              sentences: [
-                create_sentence_node(words: [
-                  create_node(type: 'TEXT', value: 'and another blocks', consumed: 1),
-                ], consumed: 2)
+      node = [parse(tokens)].collect do |bd|
+        [
+          bd.type,
+          bd.blocks.collect do |bl|
+            s = bl.sentences.first
+            [
+              bl.type,
+              [
+                s.type,
+                s.words.collect {|w| [w.type, w.value, w.consumed]},
+                s.consumed
               ],
-              consumed: 2
-            )
+              bl.consumed
+            ]
+          end,
+          bd.consumed
+        ]
+      end.first
+
+      expect(node).to eq(
+        [
+          "BODY",
+          [
+            [
+              "HEADING",
+              ["SENTENCE", [["TEXT", " title", 1]], 1],
+              4
+            ],
+            [
+              "PARAGRAPH",
+              ["SENTENCE", [["TEXT", "and another blocks", 1]], 2],
+              2
+            ]
           ],
-          consumed: 6
-        )
+          6
+        ]
       )
     end
 
     it "can parse text that has level 2 heading and another" do
       tokens = tokenize("## title\n\nand another blocks")
-      node = parse(tokens)
 
-      expect(node).to eq_body_node(
-        create_body_node(
-          blocks: [
-            create_node(type: 'HEADING_LEVEL2', value: ' title', consumed: 5),
-            create_paragraph_node(
-              sentences: [
-                create_sentence_node(words: [
-                  create_node(type: 'TEXT', value: 'and another blocks', consumed: 1),
-                ], consumed: 2)
+      node = [parse(tokens)].collect do |bd|
+        [
+          bd.type,
+          bd.blocks.collect do |bl|
+            s = bl.sentences.first
+            [
+              bl.type,
+              [
+                s.type,
+                s.words.collect {|w| [w.type, w.value, w.consumed]},
+                s.consumed
               ],
-              consumed: 2
-            )
+              bl.consumed
+            ]
+          end,
+          bd.consumed
+        ]
+      end.first
+
+      expect(node).to eq(
+        [
+          "BODY",
+          [
+            [
+              "HEADING_LEVEL2",
+              ["SENTENCE", [["TEXT", " title", 1]], 1],
+              5
+            ],
+            [
+              "PARAGRAPH",
+              ["SENTENCE", [["TEXT", "and another blocks", 1]], 2],
+              2
+            ]
           ],
-          consumed: 7
-        )
+          7
+        ]
       )
     end
   end
