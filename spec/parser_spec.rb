@@ -155,7 +155,7 @@ describe Md2Html::Parser, "parser" do
       nl_token = tokenize("__Foo__ and *text*.\n")
       sentence_node = [parser.match(nl_token)].collect{|x| [
         x.type,
-        x.words.collect{|s| [s.type, s.value, s.consumed]},
+        x.words.collect{|w| [w.type, w.value, w.consumed]},
         x.consumed
       ]}.first
 
@@ -166,7 +166,7 @@ describe Md2Html::Parser, "parser" do
       nl_nl_token = tokenize("__Foo__ and *text*.\n\n")
       sentence_node = [parser.match(nl_nl_token)].collect{|x| [
         x.type,
-        x.words.collect{|s| [s.type, s.value, s.consumed]},
+        x.words.collect{|w| [w.type, w.value, w.consumed]},
         x.consumed
       ]}.first
       expect(sentence_node).to eq(
@@ -186,7 +186,7 @@ describe Md2Html::Parser, "parser" do
       token_no_nl = tokenize("__Foo__ and *text*.")
       sentence_node = [parser.match(token_no_nl)].collect{|x| [
         x.type,
-        x.words.collect{|s| [s.type, s.value, s.consumed]},
+        x.words.collect{|w| [w.type, w.value, w.consumed]},
         x.consumed
       ]}.first
       expect(sentence_node).to eq(
@@ -196,7 +196,7 @@ describe Md2Html::Parser, "parser" do
       token_nl = tokenize("__Foo__ and *text*.\n")
       sentence_node = [parser.match(token_nl)].collect{|x| [
         x.type,
-        x.words.collect{|s| [s.type, s.value, s.consumed]},
+        x.words.collect{|w| [w.type, w.value, w.consumed]},
         x.consumed
       ]}.first
       expect(sentence_node).to eq(
@@ -206,7 +206,7 @@ describe Md2Html::Parser, "parser" do
       token_nl_nl = tokenize("__Foo__ and *text*.\n\n")
       sentence_node = [parser.match(token_nl_nl)].collect{|x| [
         x.type,
-        x.words.collect{|s| [s.type, s.value, s.consumed]},
+        x.words.collect{|w| [w.type, w.value, w.consumed]},
         x.consumed
       ]}.first
       expect(sentence_node).to eq(
@@ -224,7 +224,7 @@ describe Md2Html::Parser, "parser" do
       tokens = tokenize("\\- blah blah")
       sentence_node = [parser.match(tokens)].collect{|x| [
         x.type,
-        x.words.collect{|s| [s.type, s.value, s.consumed]},
+        x.words.collect{|w| [w.type, w.value, w.consumed]},
         x.consumed
       ]}.first
       expect(sentence_node).to eq(
@@ -355,14 +355,21 @@ describe Md2Html::Parser, "parser" do
 
     tokens = tokenize("# title\n")
 
-    node = [parser.match(tokens)].collect {|w| [
-      w.type,
-      w.sentences.first.words.collect {|w| w.value },
-      w.consumed
-    ]}
+    node = [parser.match(tokens)].collect {|x|
+      s = x.sentences.first
+      [
+        x.type,
+        [
+          s.type,
+          s.words.collect { |w| [w.type, w.value, w.consumed] },
+          s.consumed
+        ],
+        x.consumed
+      ]
+    }
 
     expect(node).to eq(
-      [['HEADING', [' title'], 4]]
+      [['HEADING', ['SENTENCE', [['TEXT', ' title', 1]], 1], 4]]
     )
   end
 
@@ -380,14 +387,21 @@ describe Md2Html::Parser, "parser" do
       parser = create_parser(:block_parser)
 
       tokens = tokenize("# title\n")
-      node = [parser.match(tokens)].collect do |hd| [
-        hd.type,
-        hd.sentences.first.words.collect {|w| w.value},
-        hd.consumed
-      ] end
+      node = [parser.match(tokens)].collect do |x|
+        s = x.sentences.first
+        [
+          x.type,
+          [
+            s.type,
+            s.words.collect { |w| [w.type, w.value, w.consumed] },
+            s.consumed
+          ],
+          x.consumed
+        ]
+      end
 
       expect(node).to eq(
-        [['HEADING', [' title'], 4]]
+        [['HEADING', ['SENTENCE', [['TEXT', ' title', 1]], 1], 4]]
       )
     end
   end
@@ -396,28 +410,42 @@ describe Md2Html::Parser, "parser" do
     it "can parse text that has heading" do
       parser = create_parser(:heading_parser)
       tokens = tokenize("# title\n")
-      node = [parser.match(tokens)].collect do |hd| [
-        hd.type,
-        hd.sentences.first.words.collect {|w| w.value},
-        hd.consumed
-      ] end
+      node = [parser.match(tokens)].collect do |x|
+        s = x.sentences.first
+        [
+          x.type,
+          [
+            s.type,
+            s.words.collect { |w| [w.type, w.value, w.consumed] },
+            s.consumed
+          ],
+          x.consumed
+        ]
+      end
 
       expect(node).to eq(
-        [['HEADING', [' title'],4]]
+        [['HEADING', ['SENTENCE', [['TEXT', ' title', 1]], 1], 4]]
       )
     end
 
     it "can parse text that has level 2 heading" do
       parser = create_parser(:heading_parser)
       tokens = tokenize("## title\n")
-      node = [parser.match(tokens)].collect do |hd| [
-        hd.type,
-        hd.sentences.first.words.collect {|w| w.value},
-        hd.consumed
-      ] end
+      node = [parser.match(tokens)].collect do |x|
+        s = x.sentences.first
+        [
+          x.type,
+          [
+            s.type,
+            s.words.collect { |w| [w.type, w.value, w.consumed] },
+            s.consumed
+          ],
+          x.consumed
+        ]
+      end
 
       expect(node).to eq(
-        [['HEADING_LEVEL2', [' title'], 5]]
+        [['HEADING_LEVEL2', ['SENTENCE', [['TEXT', ' title', 1]], 1], 5]]
       )
     end
   end
@@ -436,10 +464,10 @@ describe Md2Html::Parser, "parser" do
       parser = create_parser(:body_parser)
 
       tokens = tokenize("**Foo**\n\nAnother para.")
-      body_node = [parser.match(tokens)].collect { |b| [
-        b.blocks.collect { |p| [
-          p.type,
-          p.sentences.collect { |s|
+      body_node = [parser.match(tokens)].collect { |x| [
+        x.blocks.collect { |b| [
+          b.type,
+          b.sentences.collect { |s|
             w = s.words.first
             [
               s.type,
@@ -447,9 +475,9 @@ describe Md2Html::Parser, "parser" do
               s.consumed
             ]
           }.first,
-          p.consumed
+          b.consumed
         ] },
-        b.consumed
+        x.consumed
       ] }.first
 
       expect(body_node).to eq(
@@ -491,23 +519,23 @@ describe Md2Html::Parser, "parser" do
     it "can parse plain paragraph and list items of the same level" do
       tokens = tokenize("- foo\n- bar\n- baz\n\n__Foo__ and *text*.\nAnother para.")
 
-      node = [parse(tokens)].collect do |body| [
-        body.type,
-        body.blocks.collect do |block|
+      node = [parse(tokens)].collect do |x| [
+        x.type,
+        x.blocks.collect do |b|
           [
-            block.type,
-            block.sentences.collect do |sentence|
-              word = sentence.words.first
+            b.type,
+            b.sentences.collect do |s|
+              w = s.words.first
               [
-                sentence.type,
-                [word.type, word.value, word.consumed],
-                sentence.consumed
+                s.type,
+                [w.type, w.value, w.consumed],
+                s.consumed
               ]
             end,
-            block.consumed
+            b.consumed
           ]
         end,
-        body.consumed
+        x.consumed
       ] end.first
 
       expect(node).to eq(
@@ -534,53 +562,87 @@ describe Md2Html::Parser, "parser" do
 
     it "can parse text that has heading" do
       tokens = tokenize("# title\n")
-      node = [parse(tokens)].collect do |body| [
-        body.blocks.collect do |n| [
-          n.type,
-          n.sentences.first.words.collect {|w| w.value},
-          n.consumed
+      node = [parse(tokens)].collect do |x| [
+        x.type,
+        x.blocks.collect do |b|
+          s = b.sentences.first
+          [
+          b.type,
+            [
+              s.type,
+              s.words.collect {|w| [w.type, w.value, w.consumed]},
+              s.consumed
+            ],
+          b.consumed
         ]
         end.first,
-        body.consumed
+        x.consumed
       ] end.first
 
-      expect(node).to eq([["HEADING", [" title"], 4], 4])
+      expect(node).to eq(
+        [
+          'BODY',
+          [
+            "HEADING",
+            ["SENTENCE", [["TEXT", " title", 1]], 1],
+            4
+          ],
+          4
+        ]
+      )
     end
 
     it "can parse text that has level 2 heading" do
       tokens = tokenize("## title\n")
-      node = [parse(tokens)].collect do |body| [
-        body.blocks.collect do |n| [
-          n.type,
-          n.sentences.first.words.collect {|w| w.value},
-          n.consumed
-        ]
+      node = [parse(tokens)].collect do |x| [
+        x.type,
+        x.blocks.collect do |b|
+          s = b.sentences.first
+          [
+            b.type,
+            [
+              s.type,
+              s.words.collect {|w| [w.type, w.value, w.consumed]},
+              s.consumed
+            ],
+            b.consumed
+          ]
         end.first,
-        body.consumed
+        x.consumed
       ] end.first
 
-      expect(node).to eq([["HEADING_LEVEL2", [" title"], 5], 5])
+      expect(node).to eq(
+        [
+          "BODY",
+          [
+            "HEADING_LEVEL2",
+            ["SENTENCE", [["TEXT", " title", 1]], 1],
+            5
+          ],
+          5
+        ]
+      )
     end
 
     it "can parse text that has heading and another" do
       tokens = tokenize("# title\n\nand another blocks")
 
-      node = [parse(tokens)].collect do |bd|
+      node = [parse(tokens)].collect do |x|
         [
-          bd.type,
-          bd.blocks.collect do |bl|
-            s = bl.sentences.first
+          x.type,
+          x.blocks.collect do |b|
+            s = b.sentences.first
             [
-              bl.type,
+              b.type,
               [
                 s.type,
                 s.words.collect {|w| [w.type, w.value, w.consumed]},
                 s.consumed
               ],
-              bl.consumed
+              b.consumed
             ]
           end,
-          bd.consumed
+          x.consumed
         ]
       end.first
 
@@ -607,22 +669,22 @@ describe Md2Html::Parser, "parser" do
     it "can parse text that has level 2 heading and another" do
       tokens = tokenize("## title\n\nand another blocks")
 
-      node = [parse(tokens)].collect do |bd|
+      node = [parse(tokens)].collect do |x|
         [
-          bd.type,
-          bd.blocks.collect do |bl|
-            s = bl.sentences.first
+          x.type,
+          x.blocks.collect do |b|
+            s = b.sentences.first
             [
-              bl.type,
+              b.type,
               [
                 s.type,
                 s.words.collect {|w| [w.type, w.value, w.consumed]},
                 s.consumed
               ],
-              bl.consumed
+              b.consumed
             ]
           end,
-          bd.consumed
+          x.consumed
         ]
       end.first
 
