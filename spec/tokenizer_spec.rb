@@ -77,6 +77,32 @@ And this is another para.")
     ])
   end
 
+  it "can tokenize text that wrapped with backtick" do
+    t1 = tokenize('`foo = bar`')
+
+    expect(t1.collect {|x| [x.type, x.value]}).to eq([
+      ['BACKTICK', '`'], ['TEXT', 'foo = bar'], ['BACKTICK', '`'], ['EOF', '']
+    ])
+
+    t2 = tokenize('`main> git status --short`')
+
+    expect(t2.collect {|x| [x.type, x.value]}).to eq([
+      ['BACKTICK', '`'],
+      ['TEXT', 'main> git status '], ['DASH', '-'], ['DASH', '-'], ['TEXT', 'short'],
+      ['BACKTICK', '`'],
+      ['EOF', '']
+    ])
+
+    t3 = tokenize('`M spec/source/draft_post.md`')
+
+    expect(t3.collect {|x| [x.type, x.value]}).to eq([
+      ['BACKTICK', '`'],
+      ['TEXT', 'M spec/source/draft'], ["UNDERSCORE", "_"], ['TEXT', 'post.md'],
+      ['BACKTICK', '`'],
+      ['EOF', '']
+    ])
+  end
+
   it "can make token of non-special char when backslash exists before the char" do
     token_lists = ['\-', '\#', '\_', '\*'].collect{|w| tokens_as_array(w)}
     expect(token_lists.collect {|x| x.collect {|x| [x.type, x.value]}}).to eq(
