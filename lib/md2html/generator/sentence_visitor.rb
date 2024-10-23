@@ -6,7 +6,8 @@ module Md2Html
         "EMPHASIS" => ->(n) {"<em>#{n.value}</em>"},
         "TEXT"     => ->(n) {"#{n.value}"},
         "DASH"     => ->(n) {"#{n.value}"},
-        "NEWLINE"  => ->(n) {"<br>"}
+        "NEWLINE"  => ->(n) {"<br>"},
+        "CODE"     => ->(n) {"<code>#{n.value}</code>"}
       }.freeze
 
       def visit(sentence_node)

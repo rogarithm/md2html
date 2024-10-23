@@ -9,12 +9,14 @@ require_relative "body_parser"
 require_relative "list_parser"
 require_relative "list_item_parser"
 require_relative "list_items_parser"
+require_relative 'inline_code_parser'
 
 module Md2Html
   module Parser
     class ParserFactory
       PARSERS = {
         inline_parser:                 InlineParser,
+        inline_code_parser:            InlineCodeParser,
         text_parser:                   TextParser,
         sentence_element_parser:       SentenceElementParser,
         sentence_parser:               SentenceParser,

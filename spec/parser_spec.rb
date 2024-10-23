@@ -123,6 +123,26 @@ describe Md2Html::Parser, "parser" do
   end
 
   context "sentence parser" do
+    it "can parse tokens that has inline code" do
+      parser = create_parser(:paragraph_parser)
+      expected_words = [
+        ["TEXT", "hi ", 1],
+        ["CODE", 'foo = bar', 1],
+        ["TEXT", " there", 1]
+      ]
+
+      tokens = tokenize("hi `foo = bar` there\n")
+      expect(
+        [parser.match(tokens)].collect {|x| [
+          x.type,
+          x.words.collect{|w| [w.type, w.value, w.consumed]},
+          x.consumed
+        ]}.first
+      ).to eq(
+        ["SENTENCE", expected_words, 5]
+      )
+    end
+
     it "can parse one sentence without eof in mind" do
       parser = create_parser(:sentence_parser)
       expected_words = [
@@ -214,6 +234,38 @@ describe Md2Html::Parser, "parser" do
   end
 
   context "paragraph parser" do
+    it "can parse tokens that has inline code" do
+      parser = create_parser(:paragraph_parser)
+      ws_s1 = [
+        ["TEXT", "hi ", 1],
+        ["CODE", 'foo = bar', 1],
+        ["TEXT", " there", 1],
+        ["NEWLINE", "\\n", 1]
+      ]
+      ws_s2 = [
+        ["TEXT", "long time no ", 1],
+        ["BOLD", 'see', 5],
+        ["TEXT", "!", 1]
+      ]
+      tokens = tokenize("hi `foo = bar` there\nlong time no **see**!")
+      expect([parser.match(tokens)].collect{|x| [
+        x.type,
+        x.sentences.collect do |s| [
+          s.type,
+          s.words.collect{|w| [w.type, w.value, w.consumed]},
+          s.consumed
+        ]
+        end,
+        x.consumed
+      ]}.first).to eq(
+        [
+          "PARAGRAPH",
+          [["SENTENCE", ws_s1, 4], ["SENTENCE", ws_s2, 8]],
+          12
+        ]
+      )
+    end
+
     it "can parse tokens that has escaped special char" do
       parser = create_parser(:block_parser)
 

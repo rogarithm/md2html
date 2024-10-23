@@ -65,4 +65,12 @@ describe Md2Html::Generator do
   it "generates html from level 2 heading" do
     expect(generate("## title\n")).to eq "<h2> title</h2>\n"
   end
+
+  it "generate html from inline code" do
+    expect(generate("hi `foo = bar` there\nlong time no **see**!")).to eq(
+      "<p>
+  hi <code>foo = bar</code> there<br>long time no <strong>see</strong>!
+</p>\n"
+    )
+  end
 end
