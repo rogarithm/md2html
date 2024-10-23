@@ -19,6 +19,11 @@ def merge_chars2escape plain_text
   Md2Html::Tokenizer::merge_chars2escape plain_text
 end
 
+def merge_inline_code_chars plain_text
+  Md2Html::Tokenizer::merge_inline_code_chars plain_text
+end
+
+
 describe Md2Html::Tokenizer do
   it "tokenize text" do
     tokens = tokenize('Hi')
@@ -78,13 +83,13 @@ And this is another para.")
   end
 
   it "can tokenize text that wrapped with backtick" do
-    t1 = tokenize('`foo = bar`')
+    t1 = tokens_as_array('`foo = bar`')
 
     expect(t1.collect {|x| [x.type, x.value]}).to eq([
       ['BACKTICK', '`'], ['TEXT', 'foo = bar'], ['BACKTICK', '`'], ['EOF', '']
     ])
 
-    t2 = tokenize('`main> git status --short`')
+    t2 = tokens_as_array('`main> git status --short`')
 
     expect(t2.collect {|x| [x.type, x.value]}).to eq([
       ['BACKTICK', '`'],
@@ -93,7 +98,7 @@ And this is another para.")
       ['EOF', '']
     ])
 
-    t3 = tokenize('`M spec/source/draft_post.md`')
+    t3 = tokens_as_array('`M spec/source/draft_post.md`')
 
     expect(t3.collect {|x| [x.type, x.value]}).to eq([
       ['BACKTICK', '`'],
@@ -122,6 +127,32 @@ And this is another para.")
       merge_chars2escape(token_list).collect {|x| [x.type, x.value]}
     ).to eq(
       [["TEXT", "-"], ["EOF", ""]]
+    )
+  end
+
+  it "merge_inline_code_chars() merges chars for inline code" do
+    token_list = tokens_as_array('hi `foo = bar` there')
+
+    expect(
+      merge_inline_code_chars(token_list).collect {|x| [x.type, x.value]}
+    ).to eq(
+      [
+        ["TEXT", "hi "], ["CODE", 'foo = bar'], ["TEXT", " there"], ["EOF", ""]
+      ]
+    )
+  end
+
+  it "merge_inline_code_chars() merges multiple set of chars for inline code" do
+    token_list = tokens_as_array('hi `foo = bar` there and still here is some code: `main> git status --short`')
+
+    expect(
+      merge_inline_code_chars(token_list).collect {|x| [x.type, x.value]}
+    ).to eq(
+      [
+        ["TEXT", "hi "], ["CODE", 'foo = bar'],
+        ["TEXT", " there and still here is some code: "],
+        ["CODE", 'main> git status --short'], ["EOF", ""]
+      ]
     )
   end
 end
