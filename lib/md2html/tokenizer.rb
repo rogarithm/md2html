@@ -18,8 +18,48 @@ module Md2Html
 
     def self.tokenize(plain_markdown)
       tokens_array = tokens_as_array(plain_markdown)
-      merged_tokens = merge_chars2escape(tokens_array)
-      Tokenizer::TokenList.new(merged_tokens)
+      inline_code_merged_tokens = merge_inline_code_chars(tokens_array)
+      escape_merged_tokens = merge_chars2escape(inline_code_merged_tokens)
+      Tokenizer::TokenList.new(escape_merged_tokens)
+    end
+
+    def self.merge_inline_code_chars(tokens_array)
+      # backtick 문자의 위치를 찾는다
+      backtick_idx_list = tokens_array.map.with_index do |token, idx|
+        idx if token.type == 'BACKTICK'
+      end.compact
+
+      if backtick_idx_list.size == 0
+        return tokens_array
+      end
+
+      # TODO
+      #  - backtick 쌍이 맞지 않다는 오류 내보내기
+      #  - backtick 문자 바로 앞 문자가 escape 문자인 경우
+      #    해당 backtick은 인라인 코드 토큰 만들기 연산에서 제외하기
+      if backtick_idx_list.size % 2 != 0
+      end
+
+      merged_tokens = []
+      start = 0
+      backtick_idx_list.each_slice(2).with_index do |pair|
+        # 현재 backtick 쌍에 대해서
+        #  backtick 쌍으로 둘러싸인 영역 왼쪽에 있는 토큰은 그대로 둔다
+        no_code_left = tokens_array[start...pair[0]]
+
+        #  backtick 안쪽에 있는 토큰을 CODE 타입 토큰 하나로 합친다
+        inline_code = Token.new(
+          type: 'CODE',
+          value: tokens_array[pair[0]+1...pair[1]].map {|t| t.value}.join
+        )
+        merged_tokens << no_code_left << inline_code
+        start = pair[1] + 1
+      end
+      no_code_right = tokens_array[backtick_idx_list[backtick_idx_list.size - 1]+1..-1]
+
+      # 남은 토큰은 그대로 둔다
+      merged_tokens << no_code_right
+      merged_tokens.flatten
     end
 
     def self.merge_chars2escape(tokens_array)
