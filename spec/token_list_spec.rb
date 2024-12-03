@@ -18,16 +18,26 @@ describe Md2Html::Tokenizer::TokenList do
     expect(token_list.peek('UNDERSCORE', 'UNDERSCORE', 'TEXT')).to eq false
   end
 
-  it "peek_or() returns true when at least 1 matching token exists" do
+  it "peek_or()은 토큰 리스트와 순서가 맞는 토큰 타입이 입력으로 적어도 한 개 이상 주어지면 true를 반환한다" do
+    token_list = Md2Html::Tokenizer::tokenize('_Foo_')
+    expect(token_list.peek_or(%w(UNDERSCORE))).to eq true
+    expect(token_list.peek_or(%w(UNDERSCORE TEXT))).to eq true
+  end
+
+  it "peek_or()은 토큰 리스트에 있는 토큰 타입이더라도 순서가 맞지 않게 주어지면 false를 반환한다" do
+    token_list = Md2Html::Tokenizer::tokenize('_Foo_')
+    expect(token_list.peek_or(%w(TEXT))).to eq false
+  end
+
+  it "peek_or()에 주어진 문자열 리스트 중 토큰 리스트와 순서가 맞는 리스트가 있다면 true를 반환한다" do
     token_list = Md2Html::Tokenizer::tokenize('_Foo_')
     expect(token_list.peek_or(%w(TEXT), %w(UNDERSCORE TEXT UNDERSCORE))).to eq true
     expect(token_list.peek_or(%w(UNDERSCORE TEXT UNDERSCORE), %w(TEXT))).to eq true
   end
 
-  it "peek_or() returns true when given token types match in order, and only part of it" do
-    token_list = Md2Html::Tokenizer::tokenize('_Foo_')
-    expect(token_list.peek_or(%w(TEXT))).to eq false
-    expect(token_list.peek_or(%w(UNDERSCORE TEXT))).to eq true
+  it "peek_or() for list item whose text has dash char" do
+    list_item_tokens = Md2Html::Tokenizer::tokenize("- fo-o\n")
+    list_item_tokens.peek_or(%w(DASH TEXT NEWLINE))
   end
 
   it "peek_from() specifies the position of token to match" do
