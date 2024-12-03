@@ -31,6 +31,16 @@ module Md2Html
         return offset(index).peek(*expected_token_type_sequence)
       end
 
+      def peek_until(stt_token_type, end_token_type)
+        stt_index = tokens.find_index {|t| t.type == stt_token_type}
+        end_index = tokens.find_index {|t| t.type == end_token_type}
+
+        return nil if stt_index == nil or end_index == nil
+        return nil if stt_index == nil and end_index == nil and end_index - stt_index == 1
+
+        TokenList.new(tokens[stt_index+1..end_index-1])
+      end
+
       def grab!(amount)
         raise "Invalid amount requested" if amount > tokens.length
         tokens.shift(amount)
@@ -39,6 +49,14 @@ module Md2Html
       def offset(index)
         return self if index.zero?
         TokenList.new(tokens[index..-1])
+      end
+
+      def values
+        self.tokens.map {|t| t.value}.join
+      end
+
+      def has_no_token
+        tokens.size == 0
       end
 
       def size

@@ -5,7 +5,8 @@ include Test::Unit::Assertions
 
 paths = [
   'bold/bold', 'paragraph/one_para', 'paragraph/one_para_with_br', 'paragraph/two_para',
-  'paragraph/inline_code', 'list/list', 'escape/escape', 'heading/level_1', 'heading/level_2'
+  'paragraph/inline_code', 'list/list', 'escape/escape', 'heading/level_1', 'heading/level_2',
+  'list/list_2'
 ]
 paths.each do |path|
   # 마크다운 포맷 테스트 데이터를 읽어온다

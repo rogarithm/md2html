@@ -61,6 +61,15 @@ describe Md2Html::Parser, "parser" do
   end
 
   context "list items parser" do
+    it "cannot parse invalid list item" do
+      parser = create_parser(:list_items_parser)
+
+      list_nl_eof_token = tokenize("-\n")
+      expect(parser.match(list_nl_eof_token).null?).to eq(
+        true
+      )
+    end
+
     it "can parse list item ends with eof" do
       parser = create_parser(:list_items_parser)
 
@@ -118,6 +127,27 @@ describe Md2Html::Parser, "parser" do
         x.consumed
       ]}.first).to eq(
         ["LIST", [["LIST_ITEM", ['TEXT', " foo", 1], 3], ["LIST_ITEM", ['TEXT', " bar", 1], 3]], 7]
+      )
+    end
+
+    it "can parse list item whose text has dash char" do
+      parser = create_parser(:list_items_parser)
+
+      list_nl_eof_token = tokenize("- fo-o\n")
+      # p parser.match(list_nl_eof_token)
+      expect([parser.match(list_nl_eof_token)].collect{|x| [
+        x.type,
+        x.sentences.collect{|s|
+          w = s.words.first
+          [
+            s.type,
+            [w.type, w.value, w.consumed],
+            s.consumed
+          ]
+        }.first,
+        x.consumed
+      ]}.first).to eq(
+        ["LIST", ["LIST_ITEM", ['TEXT', " fo-o", 3], 5], 6]
       )
     end
   end
