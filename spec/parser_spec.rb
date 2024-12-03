@@ -124,7 +124,7 @@ describe Md2Html::Parser, "parser" do
 
   context "sentence parser" do
     it "can parse tokens that has inline code" do
-      parser = create_parser(:paragraph_parser)
+      parser = create_parser(:sentence_parser)
       expected_words = [
         ["TEXT", "hi ", 1],
         ["CODE", 'foo = bar', 1],
