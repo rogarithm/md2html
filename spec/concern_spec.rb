@@ -2,6 +2,11 @@ require_relative '../lib/md2html/tokenizer'
 require_relative '../lib/md2html/parser/parser_factory'
 require 'pry'
 
+RSpec.configure do |config|
+  config.filter_run_when_matching(focus: true)
+  config.example_status_persistence_file_path = 'spec/pass_fail_history'
+end
+
 describe Md2Html::Parser::MatchesStar do
   let(:ms) { Class.new { extend Md2Html::Parser::MatchesStar } }
   let(:mf) { Class.new { extend Md2Html::Parser::MatchesFirst } }
@@ -22,9 +27,9 @@ describe Md2Html::Parser::MatchesStar do
     nodes, consumed = ms.match_star(one, with: @sentence_element_parser)
     expect(consumed).to eq(1)
 
-    more = Md2Html::Tokenizer::tokenize("- matches 0 or more\n")
+    more = Md2Html::Tokenizer::tokenize("matches 0 or more\n")
     nodes, consumed = ms.match_star(more, with: @sentence_element_parser)
-    expect(consumed).to eq(2)
+    expect(consumed).to eq(1)
   end
 
   it "matchesFirst matches only 1" do
@@ -36,7 +41,7 @@ describe Md2Html::Parser::MatchesStar do
     node = mf.match_first(one, @inline_parser, @text_parser)
     expect(node.consumed).to eq(1)
 
-    two = Md2Html::Tokenizer::tokenize("- ttt\n")
+    two = Md2Html::Tokenizer::tokenize("t-tt\n")
     node = mf.match_first(two, @inline_parser, @text_parser)
     expect(node.consumed).to eq(1)
   end

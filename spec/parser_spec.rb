@@ -47,17 +47,6 @@ describe Md2Html::Parser, "parser" do
         [['EMPHASIS', emphasis_token.second.value, 3]]
       )
     end
-
-    it "can parse tokens that has dash tag" do
-      parser = create_parser(:inline_parser)
-
-      dash_token = tokenize("-")
-      expect(
-        [parser.match(dash_token)].collect {|x| [x.type, x.value, x.consumed]}
-      ).to eq(
-        [['DASH', dash_token.first.value, 1]]
-      )
-    end
   end
 
   context "list items parser" do
@@ -247,8 +236,7 @@ describe Md2Html::Parser, "parser" do
     it "can parse tokens that has escaped special char" do
       parser = create_parser(:sentence_parser)
       expected_words = [
-        ['TEXT', '-',  1],
-        ['TEXT', ' blah blah', 1]
+        ['TEXT', '- blah blah',  1]
       ]
 
       tokens = tokenize("\\- blah blah")
@@ -258,7 +246,7 @@ describe Md2Html::Parser, "parser" do
         x.consumed
       ]}.first
       expect(sentence_node).to eq(
-        ['SENTENCE', expected_words, 3]
+        ['SENTENCE', expected_words, 2]
       )
     end
   end
@@ -314,10 +302,10 @@ describe Md2Html::Parser, "parser" do
           "PARAGRAPH",
           [
             "SENTENCE",
-            [["TEXT", "-", 1], ["TEXT", " blah blah", 1]],
-            3
+            [["TEXT", "- blah blah", 1]],
+            2
           ],
-          3
+          2
         ]
       )
     end
@@ -439,10 +427,10 @@ describe Md2Html::Parser, "parser" do
     it "can parse text that has dash character" do
       parser = create_parser(:block_parser)
 
-      tokens = tokenize("- foo")
+      tokens = tokenize("- foo\n")
       paragraph_node_consumed = [parser.match(tokens)].collect{|x| [x.consumed]}.first
 
-      expect(paragraph_node_consumed).to eq [3]
+      expect(paragraph_node_consumed).to eq [4]
     end
 
     it "can parse text that has hash character" do
@@ -516,10 +504,10 @@ describe Md2Html::Parser, "parser" do
     it "can parse text that has dash character" do
       parser = create_parser(:body_parser)
 
-      tokens = tokenize("- foo")
+      tokens = tokenize("- foo\n")
       paragraph_node = [parser.match(tokens)].collect{|x| [x.consumed]}.first
 
-      expect(paragraph_node).to eq [3]
+      expect(paragraph_node).to eq [4]
     end
 
     it "can parse two paragraphs" do
@@ -561,9 +549,9 @@ describe Md2Html::Parser, "parser" do
 
   context "with parser chain" do
     it "can parse text that has dash character" do
-      tokens = tokenize("- foo")
+      tokens = tokenize("- foo\n")
       nodes = parse(tokens)
-      expect(nodes.consumed).to eq 3
+      expect(nodes.consumed).to eq 4
     end
 
     it "can parse 1 list item and newline" do
@@ -769,5 +757,55 @@ describe Md2Html::Parser, "parser" do
         ]
       )
     end
+
+#     fit "d" do
+#       tokens = tokenize("foo - bar
+# \\*\\*foobar
+#
+# \\-\\-barbaz
+#
+# \\#foo")
+#       p tokens
+#       [
+#         ["BODY",
+#           [
+#             [
+#               ["LIST", ["LIST_ITEM", [["TEXT", " bar", 1]], 3], 4]
+#             ],
+#             [
+#               ["PARAGRAPH", ["SENTENCE_ENDS_EARLY", [["TEXT", "**foobar", 1]], 3], 3]
+#             ],
+#             [
+#               ["PARAGRAPH", ["SENTENCE_ENDS_EARLY", [["TEXT", "--barbaz", 1]], 3], 3]
+#             ],
+#             [
+#               ["PARAGRAPH", ["SENTENCE", [["TEXT", "#foo", 1]], 2], 2]
+#             ]
+#           ],
+#           12]
+#       ]
+#
+#       node = [parse(tokens)].collect do |x|
+#         [
+#           x.type,
+#           x.blocks.collect do |b|
+#             b.sentences.collect do |s|
+#               [
+#                 b.type,
+#                 [
+#                   s.type,
+#                   s.words.collect {|w| [w.type, w.value, w.consumed]},
+#                   s.consumed
+#                 ],
+#                 b.consumed
+#               ]
+#             end
+#           end,
+#           x.consumed
+#         ]
+#       end
+#
+#       p node
+#     end
   end
 end

@@ -77,7 +77,7 @@ describe Md2Html::Tokenizer::TokenList do
   it "peek_until()은 첫 입력에 매칭되는 토큰 다음부터 두번째 입력에 매칭되는 토큰이 나오기 전까지의 모든 토큰을 모은다" do
     token_list = Md2Html::Tokenizer::tokenize("- execute ssh-agent process, and register private key to ssh-agent
 ")
-    expect(token_list.peek_until('DASH', 'NEWLINE').collect {|x| [x.value]}.flatten!).to eq(
+    expect(token_list.peek_until('LIST_MARK', 'NEWLINE').collect {|x| [x.value]}.flatten!).to eq(
       [" execute ssh", "-", "agent process, and register private key to ssh", "-", "agent"]
     )
   end

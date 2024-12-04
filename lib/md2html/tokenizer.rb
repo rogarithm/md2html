@@ -20,7 +20,8 @@ module Md2Html
       tokens_array = tokens_as_array(plain_markdown)
       inline_code_merged_tokens = merge_inline_code_chars(tokens_array)
       escape_merged_tokens = merge_chars2escape(inline_code_merged_tokens)
-      Tokenizer::TokenList.new(escape_merged_tokens)
+      list_mark_checked_tokens = check_list_mark(escape_merged_tokens)
+      Tokenizer::TokenList.new(list_mark_checked_tokens)
     end
 
     def self.merge_inline_code_chars(tokens_array)
@@ -76,6 +77,38 @@ module Md2Html
         end
       end
       merged_tokens
+
+      merge_text_tokens = []
+      group_text_tokens = []
+      merged_tokens.each do |token|
+        if token.type == 'TEXT'
+          group_text_tokens << token
+        end
+        if token.type != 'TEXT'
+          merge_text_tokens << Tokenizer::Token.new(
+            type: 'TEXT', value: group_text_tokens.map {|t| t.value}.join
+          ) if group_text_tokens != []
+          merge_text_tokens << token
+          group_text_tokens = []
+        end
+      end
+      merge_text_tokens
+    end
+
+    def self.check_list_mark(tokens_array)
+      result = []
+      tokens_array.each.with_index do |token, idx|
+        if idx == 0 and tokens_array[idx].type == "DASH"
+          result << Tokenizer::Token.new(type: "LIST_MARK", value: "-")
+          next
+        end
+        if idx != 0 and tokens_array[idx - 1].type == "NEWLINE" and tokens_array[idx].type == "DASH"
+          result << Tokenizer::Token.new(type: "LIST_MARK", value: "-")
+          next
+        end
+        result << tokens_array[idx]
+      end
+      result
     end
 
     private
