@@ -31,14 +31,19 @@ module Md2Html
         return offset(index).peek(*expected_token_type_sequence)
       end
 
-      def peek_until(stt_token_type, end_token_type)
-        stt_index = tokens.find_index {|t| t.type == stt_token_type}
-        end_index = tokens.find_index {|t| t.type == end_token_type}
+      def peek_until(stt_token_type, end_token_types)
+        peeked_token_list = []
+        end_token_types.each do |end_token_type|
+          stt_index = tokens.find_index {|t| t.type == stt_token_type}
+          end_index = tokens.find_index {|t| t.type == end_token_type}
 
-        return nil if stt_index == nil or end_index == nil
-        return nil if stt_index == nil and end_index == nil and end_index - stt_index == 1
+          next if stt_index == nil or end_index == nil
+          next if stt_index == nil and end_index == nil and end_index - stt_index == 1
 
-        TokenList.new(tokens[stt_index+1..end_index-1])
+          peeked_token_list << TokenList.new(tokens[stt_index+1..end_index-1])
+          break
+        end
+        peeked_token_list.size === 1 ? peeked_token_list[0] : nil
       end
 
       def grab!(amount)
