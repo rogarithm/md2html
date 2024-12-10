@@ -161,10 +161,40 @@ describe Md2Html::Parser, "parser" do
           }.first
         },
       ]}.first).to eq(
-        ["LIST", 10,
+        ["LIST", 9,
           [["LIST_ITEM", 3, ['TEXT', 1, " a"]],
           ["LIST_ITEM", 3, ['TEXT', 1, " b"]],
           ["LIST_ITEM", 3, ['TEXT', 1, " c"]]]
+        ]
+      )
+    end
+
+    it "can parse a group of list items that ends with two newlines" do
+      parser = create_parser(:list_items_parser)
+
+      list_eof_token = tokenize("- a\n- b\n- c\n\n- d\n- e")
+
+      expect([parser.match(list_eof_token)].collect{|lst| [
+        lst.type,
+        lst.consumed,
+        lst.sentences.collect{|lst_item|
+          lst_item.words.collect{|txt|
+            [
+              lst_item.type,
+              lst_item.consumed,
+              [txt.type, txt.consumed, txt.value]
+            ]
+          }.first
+        },
+      ]}).to eq(
+        [
+          ["LIST", 10,
+            [
+              ["LIST_ITEM", 3, ['TEXT', 1, " a"]],
+              ["LIST_ITEM", 3, ['TEXT', 1, " b"]],
+              ["LIST_ITEM", 3, ['TEXT', 1, " c"]]
+            ]
+          ]
         ]
       )
     end
@@ -429,6 +459,39 @@ describe Md2Html::Parser, "parser" do
     end
   end
 
+  context "list parser" do
+    it "can parse a group of list items that ends with two newlines" do
+      parser = create_parser(:list_parser)
+
+      list_eof_token = tokenize("- a\n- b\n- c\n\n- d\n- e")
+      # p parser.match(list_eof_token)
+
+      expect([parser.match(list_eof_token)].collect{|lst| [
+        lst.type,
+        lst.consumed,
+        lst.sentences.collect{|lst_item|
+          lst_item.words.collect{|txt|
+            [
+              lst_item.type,
+              lst_item.consumed,
+              [txt.type, txt.consumed, txt.value]
+            ]
+          }.first
+        },
+      ]}).to eq(
+        [
+          ["LIST", 10,
+            [
+              ["LIST_ITEM", 3, ['TEXT', 1, " a"]],
+              ["LIST_ITEM", 3, ['TEXT', 1, " b"]],
+              ["LIST_ITEM", 3, ['TEXT', 1, " c"]]
+            ]
+          ]
+        ]
+      )
+    end
+  end
+
   it "heading parser parse text that has hash character" do
     parser = create_parser(:heading_parser)
 
@@ -571,6 +634,47 @@ describe Md2Html::Parser, "parser" do
             2
           ]],
           9
+        ]
+      )
+    end
+
+    it "can parse paragraph between lists" do
+      parser = create_parser(:body_parser)
+
+      tokens = tokenize("- a\n- b\n\nmid\n\n- c\n- d\n")
+      # p parser.match(tokens)
+      body_node = [parser.match(tokens)].collect { |bd| [
+        bd.type,
+        bd.consumed,
+        bd.blocks.collect { |b| [
+          b.type,
+          b.consumed,
+          b.sentences.collect { |s|
+            w = s.words.first
+            [
+              s.type,
+              s.consumed,
+              [w.type, w.consumed, w.value]
+            ]
+          }
+        ] }
+      ] }.first
+
+      expect(body_node).to eq(
+        ["BODY", 17,
+          [
+            ["LIST", 7,
+              [ ["LIST_ITEM", 3, ["TEXT", 1, " a"]],
+                ["LIST_ITEM", 3, ["TEXT", 1, " b"]] ]
+            ],
+            ["PARAGRAPH", 3,
+              [ ["SENTENCE_ENDS_EARLY", 3, ["TEXT", 1, "mid"]] ]
+            ],
+            ["LIST", 7,
+              [ ["LIST_ITEM", 3, ["TEXT", 1, " c"]],
+                ["LIST_ITEM", 3, ["TEXT", 1, " d"]] ]
+            ]
+          ]
         ]
       )
     end

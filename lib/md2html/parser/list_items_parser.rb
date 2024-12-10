@@ -9,7 +9,9 @@ module Md2Html
       include MatchesPlus
 
       def match(tokens)
-        nodes, consumed = match_plus tokens, with: list_item_parser
+        nodes, consumed = match_plus(tokens, with: list_item_parser) do |all_tokens, consumed_now|
+          all_tokens.peek_from(consumed_now, 'NEWLINE')
+        end
 
         return Node.null if nodes.empty?
 
