@@ -23,6 +23,9 @@ def merge_inline_code_chars plain_text
   Md2Html::Tokenizer::merge_inline_code_chars plain_text
 end
 
+def check_list_mark plain_text
+  Md2Html::Tokenizer::check_list_mark plain_text
+end
 
 describe Md2Html::Tokenizer do
   it "tokenize text" do
@@ -62,7 +65,7 @@ And this is another para.")
     tokens = tokenize('- first item')
 
     expect(tokens.collect {|x| [x.type, x.value]}).to eq(
-      [['DASH', '-'], ['TEXT', ' first item'], ['EOF', '']]
+      [['LIST_MARK', '-'], ['TEXT', ' first item'], ['EOF', '']]
     )
   end
 
@@ -128,6 +131,31 @@ And this is another para.")
     ).to eq(
       [["TEXT", "-"], ["EOF", ""]]
     )
+
+    token_list = tokens_as_array('\-\-barbaz')
+
+    expect(
+      merge_chars2escape(token_list).collect { |x| [x.type, x.value] }
+    ).to eq(
+      [["TEXT", "--barbaz"], ["EOF", ""]]
+    )
+
+    token_list = tokens_as_array("foo - bar
+\\*\\*foobar
+
+\\-\\-barbaz
+
+\\#foo")
+    expect(
+      merge_chars2escape(token_list).map{|t| [t.type, t.value]}
+    ).to eq(
+      [
+        ["TEXT", "foo "], ["DASH", "-"], ["TEXT", " bar"], ["NEWLINE", "\n"],
+        ["TEXT", "**foobar"], ["NEWLINE", "\n"], ["NEWLINE", "\n"],
+        ["TEXT", "--barbaz"], ["NEWLINE", "\n"], ["NEWLINE", "\n"],
+        ["TEXT", "#foo"], ["EOF", ""]
+      ]
+    )
   end
 
   it "merge_inline_code_chars() merges chars for inline code" do
@@ -152,6 +180,16 @@ And this is another para.")
         ["TEXT", "hi "], ["CODE", 'foo = bar'],
         ["TEXT", " there and still here is some code: "],
         ["CODE", 'main> git status --short'], ["EOF", ""]
+      ]
+    )
+  end
+
+  it "check_list_mark() converts list mark token's type" do
+    token_list = tokens_as_array("foo - bar\n- baz")
+    expect(check_list_mark(token_list).collect {|x| [x.type, x.value]}).to eq(
+      [
+        ["TEXT", "foo "], ["DASH", '-'], ["TEXT", " bar"], ["NEWLINE", "\n"],
+        ["LIST_MARK", "-"], ["TEXT", " baz"], ["EOF", ""]
       ]
     )
   end

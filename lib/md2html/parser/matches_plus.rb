@@ -11,6 +11,8 @@ module Md2Html
           break if node.null?
           matched_nodes += [node]
           consumed      += node.consumed
+
+          break if block_given? and yield(tokens, consumed)
         end
 
         [matched_nodes, consumed]

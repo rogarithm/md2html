@@ -5,11 +5,13 @@ module Md2Html
   module Parser
     class ListItemParser < BaseParser
       def match(tokens)
-        return Node.null unless tokens.peek_or(%w(DASH TEXT NEWLINE))
+        merge2txt = tokens.peek_until('LIST_MARK', ['NEWLINE', 'EOF'])
+        return Node.null if merge2txt.nil? or merge2txt.has_no_token
+
         SentenceNode.new({
           type: 'LIST_ITEM',
-          words: [Node.new(type: 'TEXT', value: tokens.second.value, consumed: 1)],
-          consumed: 3
+          words: [Node.new(type: 'TEXT', value: merge2txt.values, consumed: merge2txt.size)],
+          consumed: 2 + merge2txt.size
         })
       end
     end
