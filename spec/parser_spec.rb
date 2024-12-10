@@ -146,7 +146,7 @@ describe Md2Html::Parser, "parser" do
       parser = create_parser(:list_items_parser)
 
       list_eof_token = tokenize("- a\n- b\n- c")
-      p parser.match(list_eof_token)
+      # p parser.match(list_eof_token)
 
       expect([parser.match(list_eof_token)].collect{|lst| [
         lst.type,
