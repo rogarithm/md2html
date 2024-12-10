@@ -141,6 +141,33 @@ describe Md2Html::Parser, "parser" do
         ["LIST", ["LIST_ITEM", ['TEXT', " fo-o", 3], 5], 6]
       )
     end
+
+    it "can parse a group of list items that ends with just eof" do
+      parser = create_parser(:list_items_parser)
+
+      list_eof_token = tokenize("- a\n- b\n- c")
+      p parser.match(list_eof_token)
+
+      expect([parser.match(list_eof_token)].collect{|lst| [
+        lst.type,
+        lst.consumed,
+        lst.sentences.collect{|lst_item|
+          lst_item.words.collect{|txt|
+            [
+              lst_item.type,
+              lst_item.consumed,
+              [txt.type, txt.consumed, txt.value]
+            ]
+          }.first
+        },
+      ]}.first).to eq(
+        ["LIST", 10,
+          [["LIST_ITEM", 3, ['TEXT', 1, " a"]],
+          ["LIST_ITEM", 3, ['TEXT', 1, " b"]],
+          ["LIST_ITEM", 3, ['TEXT', 1, " c"]]]
+        ]
+      )
+    end
   end
 
   context "sentence parser" do

@@ -58,6 +58,14 @@ describe Md2Html::Generator do
 </ul>\n"
   end
 
+  it "generates html from problematic list" do
+    expect(generate(
+      "## HHH\n\nBBB\n\n- C(c): c\n- R(r): r\n\nDDD"
+    )).to eq(
+      "<h2> HHH</h2>\n<p>\n  BBB\n</p>\n<ul>\n  <li>C(c): c</li>\n  <li>R(r): r</li>\n</ul>\n<p>\n  DDD\n</p>\n"
+    )
+  end
+
   it "generates html from level 1 heading" do
     expect(generate("# title\n")).to eq "<h1> title</h1>\n"
   end
