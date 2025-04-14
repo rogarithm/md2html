@@ -2,9 +2,9 @@
 
 Gem::Specification.new do |s|
   s.name                  = %q{md2html}
-  s.version               = "0.1.1"
+  s.version               = "0.1.2"
   s.description           = %q{A simple markdown to html converter}
-  s.date                  = %q{2024-03-26}
+  s.date                  = %q{2025-04-14}
 
   s.authors               = ["sehoon gim"]
   s.email                 = %q{sehoongim@gmail.com}
