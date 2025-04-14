@@ -1,6 +1,24 @@
 require 'rake/clean'
 require 'rspec/core/rake_task'
 
+desc 'build gem'
+task :build => "test:all" do
+  `gem build md2html.gemspec`
+end
+
+desc 'install gem'
+task :install do
+  gem_version_line = `cat md2html.gemspec | grep "^\s*s\.version.*"`
+  gem_version = gem_version_line.match(/[0-9]+\.[0-9]+\.[0-9]+/)
+  if `gem list | grep md2html`.strip! == ""
+    puts "not found previously installed gem. install new version..."
+    `gem install ./md2html-#{gem_version}.gem`
+  else
+    puts "uninstall previously installed gem and install new version..."
+    `gem uninstall md2html && gem install ./md2html-#{gem_version}.gem`
+  end
+end
+
 namespace :test do
   desc 'run all specs and tests'
   task :all => [:token, :parser, :generator, :concern, :file] do
