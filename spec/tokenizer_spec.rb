@@ -184,6 +184,34 @@ And this is another para.")
     )
   end
 
+  it "merge_inline_code_chars() ignores 1 escaped backtick pair" do
+    token_list = tokens_as_array('\`ls\`')
+    expect(
+      merge_inline_code_chars(token_list).collect {|x| [x.type, x.value]}
+    ).to eq(
+      [
+        ["ESCAPE", "\\"], ["BACKTICK", "`"],
+        ["TEXT", "ls"], ["ESCAPE", "\\"],
+        ["BACKTICK", "`"], ["EOF", ""]
+      ]
+    )
+  end
+
+  it "merge_inline_code_chars() ignores only escaped backtick pair" do
+    token_list = tokens_as_array('\`ls\` `cat`')
+    expect(
+      merge_inline_code_chars(token_list).collect {|x| [x.type, x.value]}
+    ).to eq(
+      [
+        ["ESCAPE", "\\"], ["BACKTICK", "`"],
+        ["TEXT", "ls"], ["ESCAPE", "\\"],
+        ["BACKTICK", "`"], ["TEXT", " "],
+        ["CODE", 'cat'], ["EOF", ""]
+      ]
+    )
+  end
+
+
   it "check_list_mark() converts list mark token's type" do
     token_list = tokens_as_array("foo - bar\n- baz")
     expect(check_list_mark(token_list).collect {|x| [x.type, x.value]}).to eq(
