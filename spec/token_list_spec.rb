@@ -37,7 +37,7 @@ describe Md2Html::Tokenizer::TokenList do
 
   it "peek_or() for list item whose text has dash char" do
     list_item_tokens = Md2Html::Tokenizer::tokenize("- fo-o\n")
-    list_item_tokens.peek_or(%w(DASH TEXT NEWLINE))
+    expect(list_item_tokens.peek_or(%w(LIST_MARK TEXT DASH TEXT NEWLINE))).to eq true
   end
 
   it "peek_from() specifies the position of token to match" do
