@@ -248,6 +248,33 @@ describe Md2Html::Parser, "parser" do
       )
     end
 
+    it "can parse sentence followed by three or more newlines ends with EOF" do
+      parser = create_parser(:sentence_parser)
+      expected_words = [
+        ['TEXT', 'Hello', 1]
+      ]
+
+      tokens_3nl_eof = tokenize("Hello\n\n\n")
+      sentence_node = [parser.match(tokens_3nl_eof)].collect{|x| [
+        x.type,
+        x.words.collect{|w| [w.type, w.value, w.consumed]},
+        x.consumed
+      ]}.first
+      expect(sentence_node).to eq(
+        ["SENTENCE", expected_words, 5]
+      )
+
+      tokens_5nl_eof = tokenize("Hello\n\n\n\n\n")
+      sentence_node = [parser.match(tokens_5nl_eof)].collect{|x| [
+        x.type,
+        x.words.collect{|w| [w.type, w.value, w.consumed]},
+        x.consumed
+      ]}.first
+      expect(sentence_node).to eq(
+        ["SENTENCE", expected_words, 7]
+      )
+    end
+
     it "can parse one sentence without eof in mind" do
       parser = create_parser(:sentence_parser)
       expected_words = [

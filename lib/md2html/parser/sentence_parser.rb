@@ -13,15 +13,19 @@ module Md2Html
         return Node.null if nodes.empty?
 
         case
-        when tokens.peek_from(consumed, 'NEWLINE', 'NEWLINE', 'EOF') == true
-          consumed += 3
         when tokens.peek_from(consumed, 'NEWLINE', 'NEWLINE') == true
           newline_count = 2
           while tokens.peek_from(consumed + newline_count, 'NEWLINE') == true
             newline_count += 1
           end
-          consumed += newline_count
-          return SentenceNode.ends_early({words: nodes, consumed: consumed})
+
+          # 단락의 끝일 경우
+          if tokens.peek_from(consumed + newline_count, 'EOF') == false
+            consumed += newline_count
+            return SentenceNode.ends_early({words: nodes, consumed: consumed})
+          end
+          # 문서 전체의 끝일 경우
+          consumed += newline_count + 1  # +1 for EOF
         when tokens.peek_from(consumed, 'NEWLINE', 'EOF') == true
           consumed += 2
         when tokens.peek_from(consumed, 'NEWLINE') == true
