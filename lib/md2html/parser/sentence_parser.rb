@@ -16,7 +16,11 @@ module Md2Html
         when tokens.peek_from(consumed, 'NEWLINE', 'NEWLINE', 'EOF') == true
           consumed += 3
         when tokens.peek_from(consumed, 'NEWLINE', 'NEWLINE') == true
-          consumed += 2
+          newline_count = 2
+          while tokens.peek_from(consumed + newline_count, 'NEWLINE') == true
+            newline_count += 1
+          end
+          consumed += newline_count
           return SentenceNode.ends_early({words: nodes, consumed: consumed})
         when tokens.peek_from(consumed, 'NEWLINE', 'EOF') == true
           consumed += 2
