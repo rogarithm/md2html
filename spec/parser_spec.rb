@@ -644,6 +644,48 @@ describe Md2Html::Parser, "parser" do
         [['HEADING_LEVEL2', ['SENTENCE', [['TEXT', ' title', 1]], 1], 5]]
       )
     end
+
+    it "can parse heading followed by three or more newlines" do
+      parser = create_parser(:heading_parser)
+
+      # consumed = 2 HASH + 1 TEXT + 3 NEWLINE + 1 EOF = 7
+      tokens_3nl = tokenize("## title\n\n\n")
+      node = [parser.match(tokens_3nl)].collect do |x|
+        s = x.sentences.first
+        [
+          x.type,
+          [
+            s.type,
+            s.words.collect { |w| [w.type, w.value, w.consumed] },
+            s.consumed
+          ],
+          x.consumed
+        ]
+      end
+
+      expect(node).to eq(
+        [['HEADING_LEVEL2', ['SENTENCE', [['TEXT', ' title', 1]], 1], 7]]
+      )
+
+      # consumed = 2 HASH + 1 TEXT + 5 NEWLINE + 1 EOF = 9
+      tokens_5nl = tokenize("## title\n\n\n\n\n")
+      node = [parser.match(tokens_5nl)].collect do |x|
+        s = x.sentences.first
+        [
+          x.type,
+          [
+            s.type,
+            s.words.collect { |w| [w.type, w.value, w.consumed] },
+            s.consumed
+          ],
+          x.consumed
+        ]
+      end
+
+      expect(node).to eq(
+        [['HEADING_LEVEL2', ['SENTENCE', [['TEXT', ' title', 1]], 1], 9]]
+      )
+    end
   end
 
   context "body parser" do

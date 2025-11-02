@@ -29,8 +29,23 @@ module Md2Html
             consumed: 1
           })
         ]
+
+        # TEXT 토큰 이후 NEWLINE 패턴 확인 및 모든 연속 개행 소비
         if left.peek_or(%w(TEXT NEWLINE NEWLINE)) == true
-          HeadingNode.new(type: node_type, sentences: single_sentence, consumed: 3 + hash_count)
+          # 2개 이상의 연속 NEWLINE을 모두 소비 (마크다운 표준)
+          newline_count = 2
+          while left.peek_from(1 + newline_count, 'NEWLINE') == true
+            newline_count += 1
+          end
+
+          # EOF 확인
+          if left.peek_from(1 + newline_count, 'EOF') == true
+            consumed = 1 + newline_count + 1 + hash_count  # TEXT + NEWLINEs + EOF + HASHes
+          else
+            consumed = 1 + newline_count + hash_count  # TEXT + NEWLINEs + HASHes
+          end
+
+          HeadingNode.new(type: node_type, sentences: single_sentence, consumed: consumed)
         elsif left.peek_or(%w(TEXT NEWLINE EOF)) == true
           HeadingNode.new(type: node_type, sentences: single_sentence, consumed: 3 + hash_count)
         elsif left.peek_or(%w(TEXT NEWLINE)) == true
