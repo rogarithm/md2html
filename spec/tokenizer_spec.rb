@@ -113,7 +113,11 @@ And this is another para.")
 
   it "can make token of non-special char when backslash exists before the char" do
     token_lists = ['\-', '\#', '\_', '\*'].collect{|w| tokens_as_array(w)}
-    expect(token_lists.collect {|x| x.collect {|x| [x.type, x.value]}}).to eq(
+    expect(token_lists.collect { |token_list|
+      token_list.collect { |x|
+        [x.type, x.value]
+      }
+    }).to eq(
       [
         [["ESCAPE", "\\"], ["DASH", "-"], ["EOF", ""]],
         [["ESCAPE", "\\"], ["HASH", "#"], ["EOF", ""]],
